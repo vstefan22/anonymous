@@ -1,0 +1,26 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%} {%endblock%}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/7f87685fd5.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" class="logo"><i class="fa-solid fa-user-secret fa-2xl"></i><span>Anonymous</span></a></li>
+            <li><a href="#"><i class="fas fa-home"></i><span class="nav-item">Home page</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-message fas"></i><span class="nav-item">Chat</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-gear fas"></i><span class="nav-item">User settings</span></a></li>
+            <li><a href="#" class="logout"><i class="fa-solid fa-right-from-bracket fas"></i><span class="nav-item">Logout</span></a></li>
+        </ul>
+    </nav>
+    {%block content%}
+    {%endblock%}
+</body>
+</html>

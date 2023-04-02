@@ -1,0 +1,30 @@
+{%extends 'anonymous/base.html'%} {%load static%}
+{%block content%}
+<head>
+    <title>{%block title%} Anonymous landing page {%endblock%}</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<h1 class="wellcome">Wellcome, Anonymous!</h1>
+<div class="quote-containter">
+<p class="quote">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+    Numquam incidunt perspiciatis vitae,
+    ex autem, labore nemo velit nobis, sunt cum repellat?
+    Natus animi quisquam quidem, porro itaque a est enim.</p>
+</div>
+<div class="container">
+    <button>Post new blog</button>
+    <div class="blog">
+        <h1>Title</h1>
+        <span>Date</span>
+        <span>Views</span>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Laborum saepe rem ad. Necessitatibus veniam nostrum facilis cum, assumenda ipsa, 
+            quo iusto sint laudantium voluptatibus iste?
+            Esse ipsum aut error delectus ipsam a quod quam at eos pariatur corrupti 
+            magnam repudiandae necessitatibus omnis veritatis, aliquam fugit libero, nemo quasi officiis facilis!</p>
+        <span>likes</span>
+        <span>dislikes</span>
+    </div>
+
+</div>
+{%endblock%}
