@@ -1,0 +1,67 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-image: url('../images//user-anon.png');
+    background-repeat: no-repeat;
+    background-position: 25% -60%;
+}
+.container{
+    background-color: white;
+    width: 40%;
+    position: absolute; /*or fixed*/
+    right: 0;
+    margin: 10%;
+    font-family: 'Courier New', monospace;
+    box-shadow: inset 12px 12px 10px 0 rgba(0, 0, 0, 0.2);
+}
+p label{
+    font-family: 'Courier New', monospace;
+    display: inline-block;
+    width: 50%;
+    text-align: left;
+}
+
+p {
+    width: 100%;
+    margin: 5%;
+}
+p input{
+    padding: 5px;
+    width: 50%;
+}
+p .helptext{
+    display: none;
+}
+ul{
+    display: none;
+}
+.greeting{
+    text-align: center;
+    margin: 2% 0 2% 5%;
+}
+
+button{
+    padding: 10px;
+    margin: 2% 0 2% 5%;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: 1px solid gray;
+    cursor: pointer;
+    overflow: hidden;
+    width: 30%;
+}
+button:hover{
+    background-color: rgb(245, 245, 245);
+}
+p .register{
+    color: black;
+    text-decoration: none;
+    margin: 2% 0 2% 5%;
+}
+.register a{
+    color: black;
+}
+
