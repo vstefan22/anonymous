@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+    <form method="post">
+        {%csrf_token%}
+        <div class="container">
+            <h1>Login, Anonymous</h1>
+            <div class="input-info">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"  value='Anonymous' disabled>
+            </div>
+            <div class="input-info">
+                <label for="password" title="Don't forget this password!">Password</label>
+                <input type="password" id="password" name="password" placeholder="********">
+                <p class="warning">If you forget this password you will not be able to get new a password!</p>
+            </div>
+            <button type="submit">Log In</button>
+            <p class="register">Not a user? <a href="">Register!</a></p>
+        </div>
+    </form>
+</body>
+</html>
