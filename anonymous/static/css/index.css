@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 body{
-    background: #02172e;
+    background: #063970;
 }
 .wellcome{
     margin-top: 1.5rem;
@@ -16,15 +16,49 @@ body{
     width: 60ch;
 
 }
-.quote-containter{
-    margin-top: 1.5em;
-    display: flex;
-    justify-content: center;
+.anonymous{
+   
+    margin-top: 10px;
+    text-align: center;
+}
+.anonymous img{
+    width: 7%;
+    color: white;
 }
 
 .blog{
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    font-size: 17px;
     margin: auto;
     text-align: center;
     border: 2px solid white;
     width: 80%;
+    padding: 10px;
+}
+.blog .title{
+    text-transform: uppercase;
+}
+.blog p{
+    margin: 20px 0 20px 10px;
+    text-align: left;
+}
+.data{
+    display: flex;
+}
+.views{
+    margin-left: auto;
+    margin-right: 10px;
+}
+.date{
+    margin-left: 10px;
+}
+
+.interaction{
+    display: flex;
+    justify-content: start;
+    margin-left: 10px;
+}
+.likes{
+    margin-right: 20px;
 }
