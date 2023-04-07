@@ -1,0 +1,17 @@
+{%extends 'anonymous/base.html' %}{%load static%}
+{%block content%}
+<head>
+    <title>New Post</title>
+    <link rel="stylesheet" href="{% static 'css/new_post.css'%}">
+</head>
+<div class="container">
+    <h1>Publish Your Post</h1>
+    <p id="alert">No one can identify your username or any personal information, but people that will visit this blog will be able to message you</p>
+    <form action="" method="post">
+        {%csrf_token%}
+       {{form.as_p}}
+        <button type="submit" id="submit">Publish</button>
+    </form>
+</div>
+<script src="{% static 'javascript/new_post.js' %}"></script>
+{%endblock%}

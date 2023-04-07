@@ -1,11 +1,13 @@
 from django.urls import path
-from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
     path('', views.index, name = 'index'),
     path('chat/<str:room_name>/', views.room, name = 'room'),
     path('login/', views.login, name = 'login'),
-    path('register/', views.register, name = 'register')
+    path('register/', views.register, name = 'register'),
+    path('logout/', views.logout_view, name = 'logout'),
+    path('new-post/', views.new_post, name = 'new_post'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

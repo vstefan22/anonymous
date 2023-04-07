@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import ID, Anonymous
-admin.site.register(ID)
+from .models import Anonymous, Post
 admin.site.register(Anonymous)
+admin.site.register(Post)

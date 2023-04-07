@@ -3,17 +3,16 @@ from django.contrib.auth.models import User
 
 class Anonymous(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_number = models.IntegerField()
     code = models.TextField()
 
-class ID(models.Model):
-    user_number = models.IntegerField()
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.title
 
 class Tags(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
