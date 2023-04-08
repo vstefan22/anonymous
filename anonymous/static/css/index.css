@@ -1,69 +1,85 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-body{
-    background: #063970;
+body {
+  background: #063970;
 }
-.wellcome{
-    margin-top: 1.5rem;
-    color: white;
-    text-align: center;
+.wellcome {
+  margin-top: 1.5rem;
+  color: white;
+  text-align: center;
 }
-.quote{
-    text-align: center;
-    width: 60ch;
-
+.quote {
+  text-align: center;
+  width: 60ch;
 }
-.anonymous{
-   
-    margin: 10px 0 20px 0;
-    text-align: center;
+.anonymous {
+  margin: 10px 0 20px 0;
+  text-align: center;
 }
-.anonymous img{
-    width: 7%;
-    color: white;
+.anonymous img {
+  width: 7%;
+  color: white;
 }
 
-.blog{
-    font-family: 'Courier New', monospace;
-    font-weight: 500;
-    font-size: 17px;
-    margin: auto;
-    text-align: center;
-    border: 2px solid white;
-    width: 80%;
-    padding: 10px;
+.blog {
+  font-family: "Courier New", monospace;
+  font-weight: 500;
+  font-size: 17px;
+  margin: auto;
+  text-align: center;
+  border: 2px solid white;
+  width: 80%;
+  padding: 10px;
 }
-.blog .title{
-    text-transform: uppercase;
+.blog .title {
+  text-transform: uppercase;
 }
-.blog p{
-    margin: 20px 0 20px 10px;
-    text-align: left;
+.blog p {
+  margin: 20px 0 20px 10px;
+  text-align: left;
 }
-.data{
-    display: flex;
+.data {
+  display: flex;
 }
-.views{
-    margin-left: auto;
-    margin-right: 10px;
+.views {
+  margin-left: auto;
+  margin-right: 10px;
 }
-.date{
-    margin-left: 10px;
-}
-
-.interaction{
-    display: flex;
-    justify-content: start;
-    margin-left: 10px;
-}
-.likes{
-    margin-right: 20px;
+.date {
+  margin-left: 10px;
 }
 
-.messages{
-    color: #2ce638;
-    background-color: white;
+.interaction {
+  display: flex;
+  justify-content: start;
+  margin-left: 10px;
+}
+.likes {
+  margin-right: 20px;
+}
+
+.modal-content {
+  background-color: black;
+  color: white;
+  z-index: 1; /* Sit on top */
+  position: fixed; /* Stay in place */
+}
+.hidden {
+  display: none;
+}
+.animation {
+  opacity: 1;
+  animation: fadeOut 0.5s linear;
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    display: none;
+  }
 }
