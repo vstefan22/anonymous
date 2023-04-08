@@ -17,7 +17,11 @@
             <li><a href="{% url 'index' %}"><i class="fas fa-home"></i><span class="nav-item">Home page</span></a></li>
             <li><a href="#"><i class="fa-solid fa-message fas"></i><span class="nav-item">Chat</span></a></li>
             <li><a href="#"><i class="fa-solid fa-gear fas"></i><span class="nav-item">User settings</span></a></li>
+            {%if request.user.is_authenticated%}
             <li><a href="{% url 'logout' %}" class="logout"><i class="fa-solid fa-right-from-bracket fas"></i><span class="nav-item">Logout</span></a></li>
+            {%else%}
+            <li><a href="{% url 'login' %}" class="logout"><i class="fa-solid fa-right-from-bracket fas"></i><span class="nav-item">Login</span></a></li>
+            {%endif%}
             <li><a href="{% url 'new_post' %}"><i class="fa-solid fa-plus fas"></i><button class="nav-item nav-button">New blog</button></a></li>
         </ul>
     </nav>

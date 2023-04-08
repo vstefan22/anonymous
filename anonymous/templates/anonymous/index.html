@@ -1,30 +1,49 @@
-{%extends 'anonymous/base.html'%} {%load static%}
-{%block content%}
+{%extends 'anonymous/base.html'%} {%load static%} {%block content%}
 <head>
-    <title>{%block title%} Anonymous landing page {%endblock%}</title>
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <title>{%block title%} Anonymous landing page {%endblock%}</title>
+  <link rel="stylesheet" href="{% static 'css/index.css' %}" />
 </head>
+
 <div class="anonymous">
-<img src="{% static 'images/anonymous.png' %}" alt="">
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li
+      style="
+        color: green;
+        background-color: white;
+        width: 40ch;
+        font-weight: bold;
+        margin-left: 10%;
+        font-family: 'Courier New', Courier, monospace;
+      "
+    >
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <img src="{% static 'images/anonymous.png' %}" alt="" />
 </div>
 <div class="container">
-    
-    <div class="blog">
-        <h1 class="title">Title</h1>
-        <div class="data">
-        <span class="date">2023-03-22; <i class="fa-solid fa-eye"></i> 255</span>
-        <span class="views"></span>
+  {%for post in get_all_posts%}
+  <div class="blog">
+    <h1 class="title">{{post.title}}</h1>
+    <div class="data">
+      <span class="date">2023-03-22; <i class="fa-solid fa-eye"></i> 255</span>
+      <span class="views"></span>
     </div>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Laborum saepe rem ad. Necessitatibus veniam nostrum facilis cum, assumenda ipsa, 
-            quo iusto sint laudantium voluptatibus iste?
-            Esse ipsum aut error delectus ipsam a quod quam at eos pariatur corrupti 
-            magnam repudiandae necessitatibus omnis veritatis, aliquam fugit libero, nemo quasi officiis facilis!</p>
-        <div class="interaction">
-        <span class="likes"><i class="fa-regular fa-thumbs-up"></i> 1000</span>
-        <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> 20</span>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum saepe rem ad. Necessitatibus
+      veniam nostrum facilis cum, assumenda ipsa, quo iusto sint laudantium voluptatibus iste? Esse
+      ipsum aut error delectus ipsam a quod quam at eos pariatur corrupti magnam repudiandae
+      necessitatibus omnis veritatis, aliquam fugit libero, nemo quasi officiis facilis!
+    </p>
+    <div class="interaction">
+      <span class="likes"><i class="fa-regular fa-thumbs-up"></i> 1000</span>
+      <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> 20</span>
     </div>
-    </div>
-
+  </div>
+  {%endfor%}
 </div>
 {%endblock%}

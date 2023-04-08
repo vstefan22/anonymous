@@ -62,3 +62,8 @@ body{
 .likes{
     margin-right: 20px;
 }
+
+.messages{
+    color: #2ce638;
+    background-color: white;
+}
