@@ -30,7 +30,11 @@
   <div class="blog">
     <div class="modal-content hidden">
       <span class="close">&times;</span>
-      <p>Some text in the Modal..</p>
+      <p class="contact">
+        <a href="{% url 'new_room' user_code post.user.code%}"
+          ><i class="fa-solid fa-message"></i> Text the publisher</a
+        >
+      </p>
     </div>
     <h1 class="title">{{post.title}}</h1>
 
