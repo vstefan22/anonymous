@@ -10,5 +10,6 @@ urlpatterns = [
     path('register/', views.register, name = 'register'),
     path('logout/', views.logout_view, name = 'logout'),
     path('new-post/', views.new_post, name = 'new_post'),
-    path('new-room/<str:sender>/<str:post_user>/', views.new_room, name = 'new_room')
+    path('new-room/<str:sender>/<str:post_user>/', views.new_room, name = 'new_room'),
+    path('chat/', views.chat, name = 'chat'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

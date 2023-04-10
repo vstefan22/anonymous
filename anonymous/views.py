@@ -10,7 +10,11 @@ import shortuuid
 
 def generate_code_user(request):
     id = shortuuid.ShortUUID().random(length=6)
-    user_acc = Anonymous.objects.filter(user = request.user)
+    try:
+        user_acc = Anonymous.objects.filter(user = request.user)
+    except:
+        user_acc = Anonymous.objects.create(user = request.user, code = id)
+        return user_acc.code
     if user_acc:
         if user_acc[0].code:
             pass
@@ -18,6 +22,7 @@ def generate_code_user(request):
              user_acc = Anonymous.objects.filter(user = request.user).create(code = id)
     else:
         user_acc = Anonymous.objects.create(user = request.user, code = id)
+        return user_acc.code
     return user_acc[0].code
 
 def index(request):
@@ -46,20 +51,27 @@ def new_room(request, sender, post_user):
     # Check for duplicate rooms
 
     check_room = Chat.objects.filter(Q(room_code = generate_room_code) | Q(room_code = check_for_reverse_room))
-    room_code = check_room[0].room_code
+    
     if check_room:
-        pass # display message that there is already live room
+        room_code = check_room[0].room_code
+        return render(request, 'anonymous/chatroom.html', {'room_name':room_code})
+
     else:
         number_of_rooms = Chat.objects.all().count()
-        room_name = f'Anonymous {number_of_rooms}'
+        room_name = f'Anonymous{number_of_rooms}'
         print(number_of_rooms)
         create_new_room = Chat.objects.create(room_name = room_name, room_code = generate_room_code, user_sender_request = get_sender, user_receiver_request = get_post_admin)
         print(create_new_room)
-        room_name = create_new_room.room_code
         print(room_name)
         return render(request, 'anonymous/chatroom.html', {'room_name':room_name})
-    return render(request, 'anonymous/chatroom.html', {'room_name':room_code})
-
+   
+def chat(request):
+    anonymous = Anonymous.objects.get(user = request.user)
+    room_list = Chat.objects.filter(Q(user_sender_request = anonymous) | Q(user_receiver_request = anonymous))
+    number_of_rooms = len(room_list)
+    context = {'room_list': room_list, 'number_of_rooms':number_of_rooms}
+    print(room_list)
+    return render(request, 'anonymous/chat.html', context)
 @login_required
 def new_post(request):
     if request.user.is_authenticated:
@@ -87,7 +99,7 @@ def login(request):
             messages.success(request,"You are logged in successfully!")
             context = {'green':'green'}
 
-            return render(request, 'anonymous/index.html', context)
+            return redirect("/", context)
         else:
             messages.error(request,"Incorrect username or password. Please try again.")
             return render(request, 'anonymous/login.html')
@@ -99,7 +111,8 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)   
         if form.is_valid():
-            form.save()
+            user = form.save()
+            auth_login(request, user)
             print(request.user.username)
         return redirect("/")
     else:

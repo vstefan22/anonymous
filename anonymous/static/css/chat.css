@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  margin: auto;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.container .title {
+  margin: 1% 0 2% 0;
+}
+.container .room .room-name {
+  margin-bottom: 2%;
+}
+.room {
+  background-color: black;
+  width: 50%;
+  margin: auto;
+  border-radius: 5px;
+  padding: 1%;
+}
+a {
+  color: white;
+}

@@ -5,6 +5,9 @@ class Anonymous(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     code = models.TextField()
 
+    def __str__(self):
+        return str(self.user)
+
 
 class Post(models.Model):
     user = models.ForeignKey(Anonymous, on_delete=models.CASCADE)
@@ -30,6 +33,7 @@ class Comments(models.Model):
 class Chat(models.Model):
     room_name = models.CharField(max_length=100)
     room_code = models.TextField()
+    date = models.DateTimeField(auto_now_add=True, blank = True, null = True)
     user_sender_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='sender')
     user_receiver_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='receiver')
 

@@ -1,0 +1,16 @@
+{% extends 'anonymous/base.html' %} {% load static %} {%block content%}
+<head>
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}" />
+</head>
+<div class="container">
+  <h1 class="title">Your last chats ({{number_of_rooms}})</h1>
+  {% for room in room_list%}
+  <a href="{% url 'room' room.room_name%}">
+    <div class="room">
+      <h1 class="room-name">{{room.room_name}}</h1>
+      <p>{{room.date|date:"M d Y"}}</p>
+    </div>
+  </a>
+  {%endfor%}
+</div>
+{%endblock%}
