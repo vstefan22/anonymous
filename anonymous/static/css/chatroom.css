@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+body {
+  background-color: #0a2a4d;
+}
+h1 {
+  text-align: center;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+  margin: 2% 0 2% 0;
+}
+textarea,
+#chat-message-input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+textarea {
+  resize: none;
+  max-height: 40em;
+  max-width: 52em;
+  background-image: url("../images/user-anon.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: 70px;
+  opacity: 0.7;
+  padding: 2%;
+  color: rgb(255, 0, 0);
+}
+
+#warning {
+  text-align: center;
+  background-color: red;
+  color: white;
+  width: 60ch;
+  margin: auto;
+}
+#chat-message-input {
+  padding: 20px 0 20px 0;
+  padding-left: 10px;
+}
+#chat-message-input::placeholder {
+  font-weight: bold;
+  opacity: 0.5;
+  color: red;
+  font-size: 18px;
+}
+nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  background: #0a2a4d;
+  width: 80px; /* do more research on units */
+  overflow: hidden;
+  transition: width 0.2s linear;
+  color: white;
+  box-shadow: 0 20px 35px black; /* will change it later */
+}
+
+.logo {
+  text-align: center;
+  display: flex;
+  transition: all 0.5s ease;
+  margin: 10px 0 0 1.6em;
+  align-items: center;
+}
+
+.logo span {
+  font-weight: bold;
+  padding-left: 2em;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+nav ul li a {
+  position: relative;
+  color: rgb(85, 83, 83);
+  font-size: 14px;
+  display: table;
+  width: 300px;
+  padding: 10px;
+  color: white;
+}
+
+.fas {
+  position: relative;
+  width: 70px;
+  height: 40px;
+  top: 14px;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+}
+
+.nav-item {
+  position: relative;
+  top: 12px;
+  margin-left: 10px;
+  color: white;
+}
+
+a:hover {
+  background-color: #d0342c;
+}
+nav:hover {
+  width: 280px;
+  transition: all 0.5s ease;
+}
+
+.logout {
+  position: absolute;
+  bottom: 0;
+}
+
+button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+#chat-log {
+  display: grid;
+  grid-template-columns: 1, 1fr;
+}

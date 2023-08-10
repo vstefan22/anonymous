@@ -3,10 +3,11 @@ from django.contrib.auth import login as auth_login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Anonymous, Post, Chat
+from .models import Anonymous, Post, Chat, Messages
 from .forms import RegisterForm, NewPost
 from django.db.models import Q
 import shortuuid
+import json
 
 def generate_code_user(request):
     id = shortuuid.ShortUUID().random(length=6)
@@ -25,6 +26,8 @@ def generate_code_user(request):
         return user_acc.code
     return user_acc[0].code
 
+@login_required(login_url="login/")
+
 def index(request):
     user_code = generate_code_user(request)
     get_all_posts = Post.objects.all()
@@ -32,10 +35,18 @@ def index(request):
 
     return render(request, 'anonymous/index.html', context)
 
-@login_required
+@login_required(login_url="login/")
 def room(request, room_name):
-    return render(request, 'anonymous/chatroom.html', {'room_name':room_name})
+    get_messages = Messages.objects.filter(room_name = room_name).order_by('date_time')
+    pass_json = {'message':[]}
+   
+    for message in get_messages:
+        pass_json['message'].append(message.message)
+        
+    messages = json.dumps(pass_json)
+    return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':messages})
 
+@login_required(login_url="login/")
 def new_room(request, sender, post_user):
     # Get user that wants to send message to the publisher and get Publisher
     get_sender = Anonymous.objects.get(code = sender)
@@ -54,25 +65,26 @@ def new_room(request, sender, post_user):
     
     if check_room:
         room_code = check_room[0].room_code
+        
         return render(request, 'anonymous/chatroom.html', {'room_name':room_code})
 
     else:
         number_of_rooms = Chat.objects.all().count()
         room_name = f'Anonymous{number_of_rooms}'
-        print(number_of_rooms)
-        create_new_room = Chat.objects.create(room_name = room_name, room_code = generate_room_code, user_sender_request = get_sender, user_receiver_request = get_post_admin)
-        print(create_new_room)
-        print(room_name)
+        Chat.objects.create(room_name = room_name, room_code = generate_room_code, user_sender_request = get_sender, user_receiver_request = get_post_admin)
         return render(request, 'anonymous/chatroom.html', {'room_name':room_name})
    
+@login_required(login_url="login/")
 def chat(request):
     anonymous = Anonymous.objects.get(user = request.user)
     room_list = Chat.objects.filter(Q(user_sender_request = anonymous) | Q(user_receiver_request = anonymous))
     number_of_rooms = len(room_list)
+    
     context = {'room_list': room_list, 'number_of_rooms':number_of_rooms}
-    print(room_list)
+    
     return render(request, 'anonymous/chat.html', context)
-@login_required
+
+@login_required(login_url="login/")
 def new_post(request):
     if request.user.is_authenticated:
         if request.method == 'POST':

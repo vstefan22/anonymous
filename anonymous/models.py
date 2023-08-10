@@ -36,5 +36,11 @@ class Chat(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank = True, null = True)
     user_sender_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='sender')
     user_receiver_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='receiver')
+    
+class Messages(models.Model):
+    room_name = models.CharField(max_length=100, blank=True)
+    message = models.TextField()
+    date_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
 
 

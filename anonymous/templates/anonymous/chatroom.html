@@ -1,50 +1,109 @@
-<!-- chat/templates/chat/room.html -->
+<!-- chat/templates/chat/room.html -->{%load static%}
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
+  <head>
+    <meta charset="utf-8" />
     <title>Chat Room</title>
-</head>
-<body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <link rel="stylesheet" href="{% static 'css/chatroom.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <a href="{% url 'index' %}" class="logo"
+            ><i class="fa-solid fa-user-secret fa-2xl"></i><span>Anonymous</span></a
+          >
+        </li>
+        <li>
+          <a href="{% url 'index' %}"
+            ><i class="fas fa-home"></i><span class="nav-item">Home page</span></a
+          >
+        </li>
+        <li>
+          <a href="{%url 'chat' %}"
+            ><i class="fa-solid fa-message fas"></i><span class="nav-item">Chat</span></a
+          >
+        </li>
+        <li>
+          <a href="#"
+            ><i class="fa-solid fa-gear fas"></i><span class="nav-item">User settings</span></a
+          >
+        </li>
+        {%if request.user.is_authenticated%}
+        <li>
+          <a href="{% url 'logout' %}" class="logout"
+            ><i class="fa-solid fa-right-from-bracket fas"></i
+            ><span class="nav-item">Logout</span></a
+          >
+        </li>
+        {%else%}
+        <li>
+          <a href="{% url 'login' %}" class="logout"
+            ><i class="fa-solid fa-right-from-bracket fas"></i
+            ><span class="nav-item">Login</span></a
+          >
+        </li>
+        {%endif%}
+        <li>
+          <a href="{% url 'new_post' %}"
+            ><i class="fa-solid fa-plus fas"></i
+            ><button class="nav-item nav-button">New blog</button></a
+          >
+        </li>
+      </ul>
+    </nav>
+    <h1>You are in the chatroom {{room_name}}</h1>
+    <p id="warning">Warning! When you send message, your username will be shown!</p>
+    <textarea id="chat-log" cols="100" rows="20"> </textarea><br />
+    <input id="chat-message-input" type="text" size="100" placeholder="Type..." /><br />
+    <input id="chat-message-submit" type="button" value="Send" />
     {{ room_name|json_script:"room-name" }}
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+      const chatLog = document.querySelector("#chat-log");
+      // Getting backend values
+      const backendValue = "{{messages|escapejs}}";
+      // Convert value to JSON and get Array from the object and put values in the textarea
+      const getBackendValue = JSON.parse(backendValue);
+      const convert = Object.values(getBackendValue);
+      chatLog.value += convert[0].join("\n");
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
+      const roomName = JSON.parse(document.getElementById("room-name").textContent);
+
+      const chatSocket = new WebSocket(
+        "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+      );
+
+      chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        chatLog.value += "\r\n" + data.message;
+      };
+
+      chatSocket.onclose = function (e) {
+        console.error("Chat socket closed unexpectedly");
+      };
+
+      document.querySelector("#chat-message-input").focus();
+      document.querySelector("#chat-message-input").onkeyup = function (e) {
+        if (e.keyCode === 13) {
+          // enter, return
+          document.querySelector("#chat-message-submit").click();
+        }
+      };
+
+      document.querySelector("#chat-message-submit").onclick = function (e) {
+        const messageInputDom = document.querySelector("#chat-message-input");
+        const message = messageInputDom.value;
+        chatSocket.send(
+          JSON.stringify({
+            message: message,
+          })
         );
-
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+        messageInputDom.value = "";
+      };
     </script>
-</body>
+  </body>
 </html>
