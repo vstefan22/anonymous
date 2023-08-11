@@ -13,36 +13,72 @@ h1 {
   font-family: "Courier New", Courier, monospace;
   margin: 2% 0 2% 0;
 }
-textarea,
+#chat-log,
 #chat-message-input {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
-textarea {
-  resize: none;
+#chat-log {
   max-height: 40em;
-  max-width: 52em;
+  max-width: 43em;
   background-image: url("../images/user-anon.png");
   background-repeat: no-repeat;
   background-position: right bottom;
+  border: 5px solid white;
+  border-radius: 20px;
   background-size: 70px;
   opacity: 0.7;
   padding: 2%;
   color: rgb(255, 0, 0);
 }
-
+#chat-log {
+  /* display: grid; */
+  /* grid-template-columns: 1, 1fr; */
+  height: 50vh;
+  overflow-y: scroll;
+}
+.message p {
+  width: fit-content;
+  max-width: 90%;
+  color: white;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 200;
+  padding: 10px;
+  background-color: black;
+  border-radius: 10px;
+  margin: 10px 0 10px 0;
+}
 #warning {
   text-align: center;
   background-color: red;
   color: white;
-  width: 60ch;
+  width: 40ch;
   margin: auto;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 200;
+  padding: 10px;
 }
+
 #chat-message-input {
-  padding: 20px 0 20px 0;
+  padding: 10px 5px 5px 10px;
   padding-left: 10px;
+  width: 43em;
+  min-height: 3rem;
+  border: 2px solid white;
+  border-radius: 10px;
+  resize: none;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 200;
+  letter-spacing: 1.5px;
 }
+
 #chat-message-input::placeholder {
   font-weight: bold;
   opacity: 0.5;
@@ -124,9 +160,4 @@ button {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-}
-
-#chat-log {
-  display: grid;
-  grid-template-columns: 1, 1fr;
 }

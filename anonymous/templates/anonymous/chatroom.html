@@ -58,28 +58,63 @@
     </nav>
     <h1>You are in the chatroom {{room_name}}</h1>
     <p id="warning">Warning! When you send message, your username will be shown!</p>
-    <textarea id="chat-log" cols="100" rows="20"> </textarea><br />
-    <input id="chat-message-input" type="text" size="100" placeholder="Type..." /><br />
+    <div id="chat-log"></div>
+    <br />
+    <textarea id="chat-message-input" type="text" size="100" placeholder="Type..."></textarea>
+    <span id="input-span"></span><br />
     <input id="chat-message-submit" type="button" value="Send" />
     {{ room_name|json_script:"room-name" }}
     <script>
       const chatLog = document.querySelector("#chat-log");
+      let html;
       // Getting backend values
       const backendValue = "{{messages|escapejs}}";
+      document.querySelector("#chat-message-input").addEventListener("input", function () {
+        this.style.height = "0px";
+        this.style.height = this.scrollHeight + "px";
+      });
       // Convert value to JSON and get Array from the object and put values in the textarea
       const getBackendValue = JSON.parse(backendValue);
-      const convert = Object.values(getBackendValue);
-      chatLog.value += convert[0].join("\n");
+      const [convert] = Object.values(getBackendValue);
+      function calcHeight(value) {
+        let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+        // min-height + lines x line-height + padding + border
+        let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
+        return newHeight;
+      }
+      // Insert previous messages in chat
+      const insertHtml = function (message) {
+        html = `<div class="message"><p>${message}</p></div>`;
+        chatLog.insertAdjacentHTML("beforeend", html);
+      };
+      // const message = document.querySelector(".message");
+      convert.forEach((message) => {
+        insertHtml(message);
+      });
+
+      // Scroll to bottom of the messages and scroll every time new messages is sent
+      chatLog.scrollTop = chatLog.scrollHeight;
+      function scrollMsg(element) {
+        const s = element.scrollHeight;
+
+        if (
+          element.scrollHeight > element.clientHeight ||
+          element.scrollWidth > element.clientWidth
+        ) {
+          chatLog.scrollBy(0, s);
+        }
+      }
 
       const roomName = JSON.parse(document.getElementById("room-name").textContent);
-
       const chatSocket = new WebSocket(
         "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
       );
 
       chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        chatLog.value += "\r\n" + data.message;
+
+        insertHtml(data.message);
+        scrollMsg(chatLog);
       };
 
       chatSocket.onclose = function (e) {
