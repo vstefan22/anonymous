@@ -61,7 +61,6 @@
     <div id="chat-log"></div>
     <br />
     <textarea id="chat-message-input" type="text" size="100" placeholder="Type..."></textarea>
-    <span id="input-span"></span><br />
     <input id="chat-message-submit" type="button" value="Send" />
     {{ room_name|json_script:"room-name" }}
     <script>
@@ -132,6 +131,9 @@
       document.querySelector("#chat-message-submit").onclick = function (e) {
         const messageInputDom = document.querySelector("#chat-message-input");
         const message = messageInputDom.value;
+        const checkInput = message.replaceAll(/\s/g, "");
+        if (!test) return;
+
         chatSocket.send(
           JSON.stringify({
             message: message,
