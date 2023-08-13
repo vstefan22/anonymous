@@ -3,11 +3,12 @@ from django.contrib.auth import login as auth_login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Anonymous, Post, Chat, Messages
+from .models import Anonymous, Post, Chat, Messages, Comments
 from .forms import RegisterForm, NewPost
 from django.db.models import Q
 import shortuuid
 import json
+from django.http import HttpResponseRedirect
 
 def generate_code_user(request):
     id = shortuuid.ShortUUID().random(length=6)
@@ -26,24 +27,39 @@ def generate_code_user(request):
         return user_acc.code
     return user_acc[0].code
 
+def get_messages(request, room_name):
+    get_messages = Messages.objects.filter(room_name = room_name).order_by('date_time')
+    pass_json = {'message':[]}
+
+    for message in get_messages:
+        pass_json['message'].append(message.message)
+        
+    messages = json.dumps(pass_json)
+    return messages
 @login_required(login_url="login/")
 
 def index(request):
+    if request.method == 'POST':
+        ajax_response = str(request.body).replace('b', '')
+        interaction_value = ajax_response[1]
+        blog_clicked_id = ajax_response[3]
+        blog = Post.objects.filter(id = blog_clicked_id)
+        likes = blog[0].likes
+        blog.update(likes = likes + 1)
+
+        print(ajax_response)
+        if '-' in ajax_response:
+            print('It has')
+        
     user_code = generate_code_user(request)
-    get_all_posts = Post.objects.all()
+    get_all_posts = Post.objects.all().order_by('-date')
     context = {'get_all_posts':get_all_posts, 'user_code': user_code}
 
     return render(request, 'anonymous/index.html', context)
 
 @login_required(login_url="login/")
 def room(request, room_name):
-    get_messages = Messages.objects.filter(room_name = room_name).order_by('date_time')
-    pass_json = {'message':[]}
-   
-    for message in get_messages:
-        pass_json['message'].append(message.message)
-        
-    messages = json.dumps(pass_json)
+    messages = get_messages(request, room_name)
     return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':messages})
 
 @login_required(login_url="login/")
@@ -64,9 +80,9 @@ def new_room(request, sender, post_user):
     check_room = Chat.objects.filter(Q(room_code = generate_room_code) | Q(room_code = check_for_reverse_room))
     
     if check_room:
-        room_code = check_room[0].room_code
-        
-        return render(request, 'anonymous/chatroom.html', {'room_name':room_code})
+        room_name = check_room[0].room_name
+        messages = get_messages(request, room_name)
+        return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':messages})
 
     else:
         number_of_rooms = Chat.objects.all().count()
@@ -93,7 +109,8 @@ def new_post(request):
                 title =  form.cleaned_data["title"]
                 description =  form.cleaned_data["description"]
                 user = request.user
-                Post.objects.create(title = title, description = description, user = user)
+                anonymous = Anonymous.objects.get(user = user)
+                Post.objects.create(title = title, description = description, user = anonymous)
         form = NewPost()
         context = {'form':form}
         return render(request, 'anonymous/new_post.html', context)
@@ -135,3 +152,15 @@ def register(request):
 def logout_view(request):
     logout(request)
     return render(request, 'anonymous/logout.html')
+
+def post(request, pk):
+    post = Post.objects.filter(id = pk)[0]
+    if request.method == 'POST':
+        commentator = request.user
+        comment = request.POST.get('comment')
+        Comments.objects.create(commentator = commentator, comment = comment, post = post)
+        return HttpResponseRedirect(f"/post/{pk}")
+
+    get_comments = Comments.objects.filter(post = post)
+    context = {'post': post, 'comments':get_comments}
+    return render(request, 'anonymous/post.html', context)

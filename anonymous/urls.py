@@ -12,4 +12,5 @@ urlpatterns = [
     path('new-post/', views.new_post, name = 'new_post'),
     path('new-room/<str:sender>/<str:post_user>/', views.new_room, name = 'new_room'),
     path('chat/', views.chat, name = 'chat'),
+    path('post/<int:pk>/', views.post, name = 'post'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

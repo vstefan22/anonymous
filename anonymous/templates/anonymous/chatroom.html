@@ -132,7 +132,7 @@
         const messageInputDom = document.querySelector("#chat-message-input");
         const message = messageInputDom.value;
         const checkInput = message.replaceAll(/\s/g, "");
-        if (!test) return;
+        if (!checkInput) return;
 
         chatSocket.send(
           JSON.stringify({

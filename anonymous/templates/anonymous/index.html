@@ -2,6 +2,7 @@
 <head>
   <title>{%block title%} Anonymous landing page {%endblock%}</title>
   <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+  <script defer src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 </head>
 
 <div class="anonymous">
@@ -36,25 +37,47 @@
         >
       </p>
     </div>
-    <h1 class="title">{{post.title}}</h1>
+    <a href="{% url 'post' post.id %}">
+      <h1 class="title">{{post.title}}</h1>
 
-    <div class="data">
-      <!-- prettier-ignore -->
-      <span class="date"
+      <div class="data">
+        <!-- prettier-ignore -->
+        <span class="date"
         ><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span
       >
-
-      <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
-    </div>
-    <p>{{post.description}}</p>
+        <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
+      </div>
+      <p>{{post.description| truncatechars:100}}</p>
+    </a>
     <div class="interaction">
-      <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
+      <span class="likes"
+        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i> {{post.likes}}</span
+      >
       <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
     </div>
   </div>
 
   <br />
+
   {%endfor%}
 </div>
-<script src="{% static 'javascript/index.js'%}"></script>
+<script src="{% static 'javascript/index.js'%}">
+  // const likes = document.querySelectorAll(".likes");
+  // likes.forEach((like) => {
+  //   like.addEventListener("click", function () {
+  //     console.log("a");
+  //     const token = Cookies.get("csrftoken");
+  //     console.log(token);
+  //     fetch("http://127.0.0.1:8000/new-post/", {
+  //       method: "POST",
+
+  //       headers: {
+  //         "Authorization:": `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(1), // body data type must match "Content-Type" header
+  //     }).then((err) => console.log(err));
+  //   });
+  // });
+</script>
 {%endblock%}

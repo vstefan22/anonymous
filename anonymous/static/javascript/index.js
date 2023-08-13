@@ -1,6 +1,9 @@
+"use strict";
+
 const openModal = document.querySelectorAll(".modal");
 const modalContent = document.querySelectorAll(".modal-content");
 const close = document.querySelectorAll(".close");
+const likes = document.querySelectorAll(".likes");
 openModal.forEach((el, i) =>
   el.addEventListener("click", function (e) {
     console.log(el);
@@ -19,3 +22,18 @@ close.forEach((el, i) =>
     }, 250);
   })
 );
+
+likes.forEach((like) => {
+  like.addEventListener("click", function (e) {
+    e.preventDefault();
+    const id = e.srcElement.dataset.id;
+    const token = Cookies.get("csrftoken");
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", "/", true);
+    xhttp.setRequestHeader("X-CSRFToken", token);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.send([1, id]);
+  });
+});

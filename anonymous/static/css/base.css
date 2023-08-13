@@ -11,7 +11,6 @@ nav {
   position: absolute;
   top: 0;
   bottom: 0;
-  height: 100%;
   left: 0;
   background: #0a2a4d;
   width: 80px; /* do more research on units */
@@ -19,6 +18,9 @@ nav {
   transition: width 0.2s linear;
   color: white;
   box-shadow: 0 20px 35px black; /* will change it later */
+  z-index: 2;
+  margin-top: 40px;
+  border-radius: 10px;
 }
 
 .logo {

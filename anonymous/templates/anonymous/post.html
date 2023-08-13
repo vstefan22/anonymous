@@ -1,0 +1,56 @@
+{%extends 'anonymous/base.html' %}{%load static%} {%block content%}
+<head>
+  <title>{{post.title}}</title>
+  <link rel="stylesheet" href="{% static 'css/post.css'%}" />
+</head>
+<div class="blog">
+  <h1 class="title">{{post.title}}</h1>
+
+  <div class="data">
+    <!-- prettier-ignore -->
+    <span class="date"><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span>
+    <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
+  </div>
+  <p>{{post.description}}</p>
+  <div class="interaction">
+    <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
+    <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+  </div>
+  <hr />
+  <div class="comment-info">  
+    <p id=>340 Comments</p>
+    <p id="sort">Sort</p>
+</div>
+
+  <br />
+  <!-- Comment section -->
+  <div class="comment-section">
+    <!-- Post comment -->
+    <form method="post">
+      {%csrf_token%}
+      <div class="container-one">
+        <p>Username:</p>
+        <textarea name="comment" id="" cols="30" rows="10"></textarea>
+      </div>
+      <button type="submit" id="post">Post</button>
+    </form>
+
+    <!-- Other comments -->
+    {%for comment in comments%}
+    
+    <div class="container-one">
+        <p>{{comment.commentator}}:</p>
+        <p id="comment">{{comment.comment}}</p>
+    </div>
+    <div class="interaction-comment">
+        <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
+        <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+    </div>
+    
+    <hr id="comment-hr"/>
+    {%endfor%}
+  </div>
+</div>
+
+<script src="{% static 'javascript/post.js' %}"></script>
+{%endblock%}

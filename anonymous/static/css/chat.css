@@ -8,6 +8,8 @@
   margin: auto;
   text-align: center;
   font-family: "Courier New", Courier, monospace;
+  display: grid;
+  grid-gap: 10px;
 }
 
 .container .title {
