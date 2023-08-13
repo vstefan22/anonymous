@@ -164,15 +164,18 @@ def logout_view(request):
 
 def post(request, pk):
     user_code = generate_code_user(request)
-    post = Post.objects.filter(id = pk)[0]
+    post = Post.objects.filter(id = pk)
+    views = post[0].views
+    post.update(views = views + 1)
     if request.method == 'POST':
         commentator = request.user
         comment = request.POST.get('comment')
-        Comments.objects.create(commentator = commentator, comment = comment, post = post)
+        Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
         return HttpResponseRedirect(f"/post/{pk}")
 
-    get_comments = Comments.objects.filter(post = post)
-    context = {'post': post, 'comments':get_comments, 'user_code': user_code}
+    get_comments = Comments.objects.filter(post = post[0])
+    number_of_comments = Comments.objects.filter(post = post[0]).count()
+    context = {'post': post[0], 'comments':get_comments, 'user_code': user_code, 'number_of_comments': number_of_comments}
     return render(request, 'anonymous/post.html', context)
 
 

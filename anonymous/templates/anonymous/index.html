@@ -58,23 +58,5 @@
 
   {%endfor%}
 </div>
-<script src="{% static 'javascript/index.js'%}">
-  // const likes = document.querySelectorAll(".likes");
-  // likes.forEach((like) => {
-  //   like.addEventListener("click", function () {
-  //     console.log("a");
-  //     const token = Cookies.get("csrftoken");
-  //     console.log(token);
-  //     fetch("http://127.0.0.1:8000/new-post/", {
-  //       method: "POST",
-
-  //       headers: {
-  //         "Authorization:": `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(1), // body data type must match "Content-Type" header
-  //     }).then((err) => console.log(err));
-  //   });
-  // });
-</script>
+<script src="{% static 'javascript/index.js'%}"></script>
 {%endblock%}
