@@ -102,9 +102,15 @@ def new_room(request, sender, post_user):
 @login_required(login_url="login/")
 def chat(request):
     anonymous = Anonymous.objects.get(user = request.user)
-    room_list = Chat.objects.filter(Q(user_sender_request = anonymous) | Q(user_receiver_request = anonymous))
-    number_of_rooms = len(room_list)
     
+    if request.method == 'POST':
+        ajax_response = json.load(request)
+        value = ajax_response['data']
+        id = ajax_response['id']
+        Chat.objects.filter(id = id).update(room_name = value)
+
+    room_list = Chat.objects.filter(Q(user_sender_request = anonymous) | Q(user_receiver_request = anonymous))
+    number_of_rooms = len(room_list)  
     context = {'room_list': room_list, 'number_of_rooms':number_of_rooms}
     
     return render(request, 'anonymous/chat.html', context)

@@ -28,3 +28,21 @@
 a {
   color: white;
 }
+
+.room-name {
+  display: flex;
+}
+.fa-pen-to-square {
+  margin: 5px 0 0 20px;
+}
+
+.hidden {
+  display: none;
+}
+.name-change {
+  background-color: transparent;
+  color: white;
+  border-bottom: 1px solid white;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2em;
+}
