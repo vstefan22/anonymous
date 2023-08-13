@@ -51,9 +51,14 @@
     </a>
     <div class="interaction">
       <span class="likes"
-        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i> {{post.likes}}</span
+        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i>
+
+        <span class="like">{{post.likes}}</span></span
       >
-      <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+      <span class="dislikes"
+        ><i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i
+        ><span class="dislike">{{post.dislikes}}</span></span
+      >
     </div>
   </div>
 

@@ -42,14 +42,25 @@ def index(request):
     if request.method == 'POST':
         ajax_response = str(request.body).replace('b', '')
         interaction_value = ajax_response[1]
-        blog_clicked_id = ajax_response[3]
+        blog_clicked_id = ajax_response[-2]
+        interaction = ajax_response[-4]
+        print(interaction)
         blog = Post.objects.filter(id = blog_clicked_id)
         likes = blog[0].likes
-        blog.update(likes = likes + 1)
-
+        dislikes = blog[0].dislikes
+        print(blog_clicked_id)
         print(ajax_response)
-        if '-' in ajax_response:
-            print('It has')
+        
+        if interaction == 'd':
+            if interaction == 'd' and '-' in interaction_value:
+                blog.update(dislikes = dislikes - 1)
+            else:
+                blog.update(dislikes = dislikes + 1)
+        else:
+            if interaction == 'l' and '-' in interaction_value:
+                blog.update(likes = likes - 1)
+            else:
+                blog.update(likes = likes + 1)
         
     user_code = generate_code_user(request)
     get_all_posts = Post.objects.all().order_by('-date')
