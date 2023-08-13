@@ -29,14 +29,6 @@
 <div class="container">
   {%for post in get_all_posts%}
   <div class="blog">
-    <div class="modal-content hidden">
-      <span class="close">&times;</span>
-      <p class="contact">
-        <a href="{% url 'new_room' user_code post.user.code%}"
-          ><i class="fa-solid fa-message"></i> Text the publisher</a
-        >
-      </p>
-    </div>
     <a href="{% url 'post' post.id %}">
       <h1 class="title">{{post.title}}</h1>
 

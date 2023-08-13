@@ -40,31 +40,29 @@ def get_messages(request, room_name):
 
 def index(request):
     if request.method == 'POST':
-        ajax_response = str(request.body).replace('b', '')
-        interaction_value = ajax_response[1]
-        blog_clicked_id = ajax_response[-2]
-        interaction = ajax_response[-4]
-        print(interaction)
-        blog = Post.objects.filter(id = blog_clicked_id)
-        likes = blog[0].likes
-        dislikes = blog[0].dislikes
-        print(blog_clicked_id)
-        print(ajax_response)
+        ajax_response = json.load(request)
+        value = ajax_response['value']
+        interaction = ajax_response['interaction']
+        post_id = ajax_response['id']
+        post = Post.objects.filter(id = post_id)
+        dislikes = post[0].dislikes
+        likes = post[0].likes
         
         if interaction == 'd':
-            if interaction == 'd' and '-' in interaction_value:
-                blog.update(dislikes = dislikes - 1)
+            if interaction == 'd' and value < 0:
+                post.update(dislikes = dislikes - 1)
             else:
-                blog.update(dislikes = dislikes + 1)
+                post.update(dislikes = dislikes + 1)
         else:
-            if interaction == 'l' and '-' in interaction_value:
-                blog.update(likes = likes - 1)
+            if interaction == 'l' and value < 0:
+                post.update(likes = likes - 1)
             else:
-                blog.update(likes = likes + 1)
+                post.update(likes = likes + 1)
+
         
-    user_code = generate_code_user(request)
+    
     get_all_posts = Post.objects.all().order_by('-date')
-    context = {'get_all_posts':get_all_posts, 'user_code': user_code}
+    context = {'get_all_posts':get_all_posts}
 
     return render(request, 'anonymous/index.html', context)
 
@@ -165,6 +163,7 @@ def logout_view(request):
     return render(request, 'anonymous/logout.html')
 
 def post(request, pk):
+    user_code = generate_code_user(request)
     post = Post.objects.filter(id = pk)[0]
     if request.method == 'POST':
         commentator = request.user
@@ -173,5 +172,31 @@ def post(request, pk):
         return HttpResponseRedirect(f"/post/{pk}")
 
     get_comments = Comments.objects.filter(post = post)
-    context = {'post': post, 'comments':get_comments}
+    context = {'post': post, 'comments':get_comments, 'user_code': user_code}
     return render(request, 'anonymous/post.html', context)
+
+
+def comment_like(request, pk, post_id):
+    # from django.utils import simplejson
+    ajax_response = json.load(request)
+    value = ajax_response['value']
+    interaction = ajax_response['interaction']
+    comment_id = ajax_response['id']
+    comment = Comments.objects.filter(id = comment_id)
+    dislikes = comment[0].dislikes
+    likes = comment[0].likes
+    
+    if interaction == 'd':
+        if interaction == 'd' and value < 0:
+            comment.update(dislikes = dislikes - 1)
+        else:
+            comment.update(dislikes = dislikes + 1)
+    else:
+        if interaction == 'l' and value < 0:
+            comment.update(likes = likes - 1)
+        else:
+            comment.update(likes = likes + 1)
+
+    
+    return HttpResponseRedirect(f"/post/{post_id}")
+    

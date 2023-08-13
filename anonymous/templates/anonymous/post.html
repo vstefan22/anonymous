@@ -2,6 +2,7 @@
 <head>
   <title>{{post.title}}</title>
   <link rel="stylesheet" href="{% static 'css/post.css'%}" />
+  <script defer src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 </head>
 <div class="blog">
   <h1 class="title">{{post.title}}</h1>
@@ -15,6 +16,10 @@
   <div class="interaction">
     <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
     <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+    <span>
+      <!-- prettier-ignore -->
+        <a href="{% url 'new_room' user_code post.user.code%}"><i class="fa-solid fa-message"></i> Text the publisher</a>
+    </span>
   </div>
   <hr />
   <div class="comment-info">  
@@ -43,8 +48,15 @@
         <p id="comment">{{comment.comment}}</p>
     </div>
     <div class="interaction-comment">
-        <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
-        <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+      <span class="likes"
+        ><i class="fa-regular fa-thumbs-up" data-id="{{comment.id}}" data-postid="{{post.id}}"></i>
+
+        <span class="like">{{comment.likes}}</span></span
+      >
+      <span class="dislikes"
+        ><i class="fa-regular fa-thumbs-down" data-id="{{comment.id}}" data-postid="{{post.id}}"></i
+        ><span class="dislike">{{comment.dislikes}}</span></span
+      >
     </div>
     
     <hr id="comment-hr"/>

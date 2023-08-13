@@ -13,4 +13,5 @@ urlpatterns = [
     path('new-room/<str:sender>/<str:post_user>/', views.new_room, name = 'new_room'),
     path('chat/', views.chat, name = 'chat'),
     path('post/<int:pk>/', views.post, name = 'post'),
+    path('comment-like/<int:pk>/<int:post_id>/', views.comment_like, name = 'comment-like'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
