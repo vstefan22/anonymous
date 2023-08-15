@@ -10,6 +10,7 @@
 
 .blog .title {
   text-transform: uppercase;
+  margin-bottom: 30px;
 }
 .blog p {
   margin: 20px 0 20px 10px;
@@ -30,17 +31,21 @@
   display: flex;
   justify-content: start;
   margin-left: 10px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 .likes {
   margin-right: 20px;
 }
 .comment-section {
-  margin-top: 5%;
+  z-index: -1;
+  position: absolute;
+  width: 80%;
 }
 textarea {
   border: 1px solid black;
   resize: none;
-  margin-bottom: 5%;
+  margin-bottom: 2%;
 }
 .container-one {
   display: flex;
@@ -57,13 +62,17 @@ textarea {
   max-width: 90%;
   overflow-wrap: break-word;
 }
-.container-one textarea {
+.comment-input textarea {
   margin-left: 20px;
   width: 100%;
   padding: 10px;
   border: none;
   border-radius: 20px;
   box-shadow: 1px 1px 10px black;
+}
+
+form {
+  margin-bottom: 5%;
 }
 
 .interaction-comment {
@@ -84,34 +93,11 @@ textarea {
 }
 hr {
   border: 1px solid black;
-  margin-top: 5%;
+  margin-bottom: 3%;
   width: 100%;
 }
 
-.comment-info {
-  float: left;
-  display: flex;
-}
-#sort {
-  border-radius: 20px;
-  padding: 5px;
-  width: 100px;
-  background-color: #f9f9f9;
-  color: black;
-  text-align: center;
-  box-shadow: 1px 1px 5px black;
-}
-
-.comment-section {
-  margin-top: 10%;
-}
-
-#comment-hr {
-  border: 1px solid rgb(197, 197, 197);
-  width: 100%;
-}
-
-.fa-message {
+.text-msg {
   margin-left: 20px;
 }
 a {
@@ -119,4 +105,57 @@ a {
 }
 a:hover {
   background-color: transparent;
+}
+#date {
+  float: right;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.comment-info {
+  float: left;
+  display: flex;
+  align-items: flex-start;
+}
+
+.sort-modal select {
+  transition: all 0.2s linear;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  width: 350px;
+}
+.sort-modal select option {
+  padding: 10px;
+  font-family: "Courier New", monospace;
+  font-size: 16px;
+}
+.sort-modal select option:hover {
+  background-color: rgb(159, 159, 159);
+  border-radius: 10px;
+}
+
+#sort {
+  background-color: #063970;
+  width: 100px;
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+#sort i {
+  margin-right: 10px;
+}
+#comments {
+  margin-top: 25px;
+  margin-right: 50px;
+  font-weight: 600;
 }

@@ -3,66 +3,89 @@
   <title>{{post.title}}</title>
   <link rel="stylesheet" href="{% static 'css/post.css'%}" />
   <script defer src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
 </head>
-<div class="blog">
-  <h1 class="title">{{post.title}}</h1>
+<body>
+  <div class="blog">
+    <h1 class="title">{{post.title}}</h1>
 
-  <div class="data">
-    <!-- prettier-ignore -->
-    <span class="date"><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span>
-    <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
-  </div>
-  <p>{{post.description}}</p>
-  <div class="interaction">
-    <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
-    <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
-    <span>
+    <div class="data">
       <!-- prettier-ignore -->
-        <a href="{% url 'new_room' user_code post.user.code%}"><i class="fa-solid fa-message"></i> Text the publisher</a>
-    </span>
-  </div>
-  <hr />
-  <div class="comment-info">  
-    <p id=>{{number_of_comments}}</p>
-    <p id="sort">Sort</p>
-</div>
+      <span class="date"><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span>
+      <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
+    </div>
+    <p>{{post.description}}</p>
+    <div class="interaction">
+      <span class="likes"><i class="fa-regular fa-thumbs-up"></i> {{post.likes}}</span>
+      <span class="dislikes"><i class="fa-regular fa-thumbs-down"></i> {{post.dislikes}}</span>
+      <span>
+        <!-- prettier-ignore -->
+        <a href="{% url 'new_room' user_code post.user.code%}"><i class="fa-solid fa-message text-msg"></i> Text the publisher</a>
+      </span>
+    </div>
+    <hr />
+    <div class="comment-info">
+      <div><p id="comments">{{number_of_comments}} comments</p></div>
 
-  <br />
-  <!-- Comment section -->
-  <div class="comment-section">
-    <!-- Post comment -->
-    <form method="post">
-      {%csrf_token%}
-      <div class="container-one">
-        <p>Username:</p>
-        <textarea name="comment" id="" cols="30" rows="10"></textarea>
+      <div class="sort-modal">
+        <p id="sort"><i class="fa-solid fa-bars"></i> Sort</p>
+        <select name="" id="select-option" class="hidden" size="3">
+          <option value="date">Date</option>
+          <option value="likes">Likes</option>
+          <option value="dislikes">Dislikes</option>
+        </select>
       </div>
-      <button type="submit" id="post">Post</button>
-    </form>
-
-    <!-- Other comments -->
-    {%for comment in comments%}
-    
-    <div class="container-one">
-        <p>{{comment.commentator}}:</p>
-        <p id="comment">{{comment.comment}}</p>
     </div>
-    <div class="interaction-comment">
-      <span class="likes"
-        ><i class="fa-regular fa-thumbs-up" data-id="{{comment.id}}" data-postid="{{post.id}}"></i>
+    <br /><br />
+    <br /><br />
 
-        <span class="like">{{comment.likes}}</span></span
-      >
-      <span class="dislikes"
-        ><i class="fa-regular fa-thumbs-down" data-id="{{comment.id}}" data-postid="{{post.id}}"></i
-        ><span class="dislike">{{comment.dislikes}}</span></span
-      >
+    <!-- Comment section -->
+    <div class="comment-section">
+      <!-- Post comment -->
+      <form method="post">
+        {%csrf_token%}
+        <div class="comment-input">
+          <p>Username:</p>
+          <textarea name="comment" id="" cols="30" rows="10"></textarea>
+        </div>
+        <button type="submit" id="post">Post</button>
+      </form>
+
+      <!-- Other comments -->
+      {%for comment in comments%}
+      <div class="comment">
+        <div class="container-one">
+          <p>{{comment.commentator}}:</p>
+          <p id="comment">{{comment.comment}}</p>
+        </div>
+        <div class="interaction-comment">
+          <span class="likes">
+            <i
+              class="fa-regular fa-thumbs-up"
+              data-id="{{comment.id}}"
+              data-postid="{{post.id}}"
+            ></i>
+            <span class="like">{{comment.likes}}</span></span
+          >
+          <span class="dislikes">
+            <i
+              class="fa-regular fa-thumbs-down"
+              data-id="{{comment.id}}"
+              data-postid="{{post.id}}"
+            ></i>
+            <span class="dislike">{{comment.dislikes}}</span></span
+          >
+        </div>
+        <p id="date">{{comment.date}}</p>
+        <hr id="comment-hr" />
+      </div>
+      {%endfor%}
     </div>
-    
-    <hr id="comment-hr"/>
-    {%endfor%}
   </div>
-</div>
 
-<script src="{% static 'javascript/post.js' %}"></script>
+  <script src="{% static 'javascript/post.js' %}"></script>
+</body>
 {%endblock%}

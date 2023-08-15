@@ -179,7 +179,7 @@ def post(request, pk):
         Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
         return HttpResponseRedirect(f"/post/{pk}")
 
-    get_comments = Comments.objects.filter(post = post[0])
+    get_comments = Comments.objects.filter(post = post[0]).order_by('-date')
     number_of_comments = Comments.objects.filter(post = post[0]).count()
     context = {'post': post[0], 'comments':get_comments, 'user_code': user_code, 'number_of_comments': number_of_comments}
     return render(request, 'anonymous/post.html', context)

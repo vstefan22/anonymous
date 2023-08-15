@@ -1,7 +1,10 @@
 "use strict";
 const likes = document.querySelectorAll(".likes");
 const dislikes = document.querySelectorAll(".dislikes");
-
+const sort = document.querySelector("#sort");
+const select = document.querySelector("#select-option");
+const body = document.body;
+const dateCommentSort = document.querySelectorAll(".comment");
 const interaction = function (value, interaction, e) {
   e.preventDefault();
   const id = e.srcElement.dataset.id;
@@ -58,5 +61,50 @@ dislikes.forEach((dislike) => {
     interaction(1, "d", e);
     updateInteraction("plus", e);
     e.target.parentNode.lastChild.classList.add("active");
+  });
+});
+
+sort.addEventListener("click", function () {
+  const modal = document.querySelector(".sort-modal");
+
+  select.classList.toggle("hidden");
+  // const sorted = [...comment].sort((a, b) => {
+  //   return new Date(b.date) - new Date(a.date);
+  // });
+  // sorted.forEach((div) => parent.append(div));
+
+  select.addEventListener("change", function (e) {
+    const selectedValue = select.value;
+    const parent = document.querySelector(".comment-section");
+    const comment = document.querySelectorAll(".comment");
+    // Remove all comments
+    comment.forEach((div) => div.remove());
+    if (selectedValue === "likes") {
+      const sorted = [...comment].sort((a, b) => {
+        return (
+          b.children[1].children[0].children[1].innerHTML -
+          a.children[1].children[0].children[1].innerHTML
+        );
+      });
+      sorted.forEach((div) => parent.append(div));
+    } else if (selectedValue === "dislikes") {
+      const sorted = [...comment].sort((a, b) => {
+        return (
+          b.children[1].children[1].children[1].innerHTML -
+          a.children[1].children[1].children[1].innerHTML
+        );
+      });
+      sorted.forEach((div) => parent.append(div));
+    } else if (selectedValue === "date") {
+      dateCommentSort.forEach((div) => parent.append(div));
+    }
+    e.preventDefault();
+  });
+  // Close when click is outside of select element
+  body.addEventListener("click", function (e) {
+    if (e.target.id === "sort") return;
+    if (!select.classList.contains("hidden")) {
+      select.classList.add("hidden");
+    }
   });
 });
