@@ -59,8 +59,6 @@ def index(request):
             else:
                 post.update(likes = likes + 1)
 
-        
-    
     get_all_posts = Post.objects.all().order_by('-date')
     context = {'get_all_posts':get_all_posts}
 
@@ -68,15 +66,23 @@ def index(request):
 
 @login_required(login_url="login/")
 def room(request, room_name):
-    messages = get_messages(request, room_name)
-    return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':messages})
+    room = Chat.objects.filter(room_name = room_name)
+    if (room[0].user_sender_request == room[0].user_receiver_request):
+        messages.error(request,"You can't text yourself")
+        return redirect("/")
+    chat_messages = get_messages(request, room_name)
+    return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages': chat_messages})
 
 @login_required(login_url="login/")
 def new_room(request, sender, post_user):
     # Get user that wants to send message to the publisher and get Publisher
     get_sender = Anonymous.objects.get(code = sender)
     get_post_admin = Anonymous.objects.get(code = post_user)
-
+    
+    if (get_sender == get_post_admin):
+        messages.error(request,"You can't text yourself!")
+        return redirect("/")
+    
     # Get UUID from both users
     get_sender_code = get_sender.code
     get_post_admin_code = get_post_admin.code
@@ -90,8 +96,8 @@ def new_room(request, sender, post_user):
     
     if check_room:
         room_name = check_room[0].room_name
-        messages = get_messages(request, room_name)
-        return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':messages})
+        chat_messages = get_messages(request, room_name)
+        return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':chat_messages})
 
     else:
         number_of_rooms = Chat.objects.all().count()
