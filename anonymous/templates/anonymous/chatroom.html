@@ -79,9 +79,6 @@
 
       // Convert value to JSON and get Array from the object and put values in the textarea
       console.log(backendValue);
-      const getBackendValue = JSON.parse(backendValue);
-      const [convert] = Object.values(getBackendValue);
-
       function calcHeight(value) {
         let numberOfLineBreaks = (value.match(/\n/g) || []).length;
         // min-height + lines x line-height + padding + border
@@ -95,9 +92,15 @@
         chatLog.insertAdjacentHTML("beforeend", html);
       };
 
-      convert.forEach((message) => {
-        insertHtml(message);
-      });
+      try {
+        const getBackendValue = JSON.parse(backendValue);
+        const [convert] = Object.values(getBackendValue);
+        convert.forEach((message) => {
+          insertHtml(message);
+        });
+      } catch {
+        console.error("Error with loading message history");
+      }
 
       // Scroll to bottom of the messages and scroll every time new messages is sent
       chatLog.scrollTop = chatLog.scrollHeight;

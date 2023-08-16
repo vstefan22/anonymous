@@ -215,3 +215,14 @@ def comment_like(request, pk, post_id):
     
     return HttpResponseRedirect(f"/post/{post_id}")
     
+
+def delete_chat(request):
+    ajax_response = json.load(request)
+    id = ajax_response['id']
+    if (ajax_response['action'] == 'Delete Chat'):
+        del_chat = Chat.objects.filter(id = id)
+        del_messages = Messages.objects.filter(room_name = del_chat[0].room_name)
+        del_chat.delete()
+        del_messages.delete()
+        
+    return HttpResponseRedirect("/chat/")

@@ -5,12 +5,22 @@
 </head>
 <div class="container">
   <h1 class="title">Your last chats ({{number_of_rooms}})</h1>
+  <div class="modal deactive">
+    <p>
+      Are you sure you want to delete chat? <br />Once you delete chat you won't be able to see
+      messages in the chat again!
+    </p>
+    <button class="yes">Yes</button>
+  </div>
   {% for room in room_list%}
   <a href="{% url 'room' room.room_name%}">
     <div class="room">
       <div class="room-name">
         <h1 class="room-title">{{room.room_name}}</h1>
-        <span><i class="fa-solid fa-pen-to-square" data-id="{{room.id}}"></i></span>
+        <span
+          ><i class="fa-solid fa-pen-to-square" data-id="{{room.id}}"></i
+          ><i class="fa fa-trash" aria-hidden="true" data-id="{{room.id}}"></i
+        ></span>
       </div>
       <p>{{room.date|date:"M d Y"}}</p>
     </div>
