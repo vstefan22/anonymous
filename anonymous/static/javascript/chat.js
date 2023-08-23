@@ -62,6 +62,24 @@ deleteChat.forEach((chat) => {
           "X-CSRFToken": token,
         },
         body: JSON.stringify({ action: "Delete Chat", id: roomId }),
+      }).catch((error) => {
+        const anonymous = document.querySelector(".container");
+        const html = `<ul class="messages">
+        <li
+          style="
+            background-color: red;
+            width: fit-content;
+            font-weight: bold;
+            margin-left: 10%;
+            padding: 10px;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+          "
+        >
+          Something went wrong, chat is not deleted. Try again later.
+        </li>
+      </ul>`;
+        anonymous.insertAdjacentHTML("afterbegin", html);
       });
       function fadeOut(element) {
         let opacity = 1;
