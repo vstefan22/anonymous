@@ -20,6 +20,12 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+class PostInteraction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name = 'interaction')
+
 class Tags(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     tag = models.CharField(max_length=100)

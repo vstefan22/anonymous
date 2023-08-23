@@ -22,8 +22,8 @@ const updateInteraction = function (condition, e) {
   let interactionNumber;
   if (condition === "minus") {
     interactionNumber = new Number(e.target.parentNode.lastChild.innerHTML) - 1;
-    e.target.classList.add("fa-regular");
-    e.target.classList.remove("fa-solid");
+    e.target.classList.toggle("fa-regular");
+    e.target.classList.toggle("fa-solid");
   } else {
     interactionNumber = new Number(e.target.parentNode.lastChild.innerHTML) + 1;
     e.target.classList.remove("fa-regular");

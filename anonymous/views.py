@@ -3,7 +3,7 @@ from django.contrib.auth import login as auth_login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Anonymous, Post, Chat, Messages, Comments
+from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction
 from .forms import RegisterForm, NewPost
 from django.db.models import Q
 import shortuuid
@@ -40,26 +40,40 @@ def get_messages(request, room_name):
 
 def index(request):
     if request.method == 'POST':
+        user = request.user
         ajax_response = json.load(request)
         value = ajax_response['value']
         interaction = ajax_response['interaction']
         post_id = ajax_response['id']
         post = Post.objects.filter(id = post_id)
+        
         dislikes = post[0].dislikes
         likes = post[0].likes
+        [print(f.name) for f in Post._meta.get_fields()]
+        get_post = Post.objects.get(id = post_id)
+        get_interactions = PostInteraction.objects.filter(post = get_post, user = user)
         
         if interaction == 'd':
             if interaction == 'd' and value < 0:
-                post.update(dislikes = dislikes - 1)
+                if get_interactions:
+                    post.update(dislikes = dislikes - 1)
+                    get_interactions.delete()
             else:
                 post.update(dislikes = dislikes + 1)
+                PostInteraction.objects.create(post = get_post, user = user, dislikes = 1)
         else:
             if interaction == 'l' and value < 0:
                 post.update(likes = likes - 1)
+                if get_interactions:
+                    get_interactions.delete()
             else:
                 post.update(likes = likes + 1)
+                PostInteraction.objects.create(post = get_post, user = user, likes = 1)
 
     get_all_posts = Post.objects.all().order_by('-date')
+    for i in get_all_posts:
+        for l in i.interaction.all():
+            print(l.user)
     context = {'get_all_posts':get_all_posts}
 
     return render(request, 'anonymous/index.html', context)

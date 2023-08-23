@@ -49,6 +49,7 @@ deleteChat.forEach((chat) => {
     console.log(roomDiv);
     const modal = document.querySelector(".modal");
     const yes = document.querySelector(".yes");
+    const numberOfChats = document.querySelector("#numberChats");
     modal.classList.remove("deactive");
     modal.style.opacity = 1;
     yes.addEventListener("click", function () {
@@ -75,6 +76,8 @@ deleteChat.forEach((chat) => {
       fadeOut(modal);
       roomDiv.classList.add("hidden");
       modal.classList.add("hidden");
+      console.log(numberOfChats);
+      numberOfChats.innerHTML = new Number(numberOfChats.innerHTML) - 1;
     });
   });
 });

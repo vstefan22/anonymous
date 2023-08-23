@@ -42,6 +42,30 @@
       <p>{{post.description| truncatechars:100}}</p>
     </a>
     <div class="interaction">
+      <!-- prettier-ignore -->
+      {%if post.interaction.all%} {% for i in post.interaction.all%} {% if i.user == request.user%}
+      {%if i.likes %}
+      <span class="likes"
+        ><i class="fa-solid fa-thumbs-up" data-id="{{post.id}}"></i>
+
+        <span class="like active">{{post.likes}}</span></span
+      >
+      <span class="dislikes"
+        ><i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i
+        ><span class="dislike">{{post.dislikes}}</span></span
+      >
+      {%endif%} {%if i.dislikes %}
+
+      <span class="likes"
+        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i>
+
+        <span class="like">{{post.likes}}</span></span
+      >
+      <span class="dislikes"
+        ><i class="fa-solid fa-thumbs-down" data-id="{{post.id}}"></i
+        ><span class="dislike active">{{post.dislikes}}</span></span
+      >
+      {%endif%} {%endif%}{%endfor%} {%else%}
       <span class="likes"
         ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i>
 
@@ -50,7 +74,7 @@
       <span class="dislikes"
         ><i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i
         ><span class="dislike">{{post.dislikes}}</span></span
-      >
+      >{%endif%}
     </div>
   </div>
 
