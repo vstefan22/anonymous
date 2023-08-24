@@ -1,0 +1,55 @@
+{% extends 'anonymous/base.html' %} {%load static%} {%block content%}
+<head>
+  <link rel="stylesheet" href="{% static 'css/user_settings.css' %}" />
+</head>
+<div class="container">
+  <div class="blogs-posted">
+    <h1 id="blogs-posted">Blogs Posted</h1>
+    <div class="sort-modal">
+      <p id="sort"><i class="fa-solid fa-bars"></i> Sort</p>
+      <select name="" id="select-option" class="hidden" size="3">
+        <option value="date">Date</option>
+        <option value="likes">Likes</option>
+        <option value="dislikes">Dislikes</option>
+        <option value="views">Views</option>
+      </select>
+    </div>
+    <hr />
+    {% for blog in blog_history%}
+
+    <div class="blog">
+      <a href="{% url 'post' blog.id %}">
+        <h1 class="title">{{blog.title}}</h1>
+
+        <div class="data">
+          <!-- prettier-ignore -->
+          <span class="date"
+            ><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{blog.date|date:"M d Y"}}</span
+          >
+          <span class="views"> <i class="fa-regular fa-eye">{{blog.views}}</i></span>
+        </div>
+        <p>{{blog.description| truncatechars:100}}</p>
+      </a>
+      <div class="interaction">
+        <span class="likes"
+          ><i class="fa-regular fa-thumbs-up"></i> <span class="like">{{blog.likes}}</span></span
+        >
+        <span class="dislikes"
+          ><i class="fa-regular fa-thumbs-down"></i
+          ><span class="dislike">{{blog.dislikes}}</span></span
+        >
+      </div>
+    </div>
+    <hr id="blog-separator" />
+    {%endfor%}
+  </div>
+  <hr />
+  <div class="account-info">
+    <h1 id="account">Account</h1>
+    <p id="date-joined">Date Joined: {{date_joined}}</p>
+    <button type="submit" id="delete-account">Delete Account</button>
+  </div>
+</div>
+<script defer src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+<script src="{% static 'javascript/user_settings.js' %}"></script>
+{%endblock%}

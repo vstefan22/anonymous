@@ -3,11 +3,12 @@ from django.contrib.auth import login as auth_login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction
+from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction, User
 from .forms import RegisterForm, NewPost
 from django.db.models import Q
 import shortuuid
 import json
+from datetime import date
 from django.http import HttpResponseRedirect
 
 def generate_code_user(request):
@@ -229,7 +230,19 @@ def comment_like(request, pk, post_id):
     
     return HttpResponseRedirect(f"/post/{post_id}")
     
-
+def user_settings(request):
+    get_anonymous = Anonymous.objects.get(user = request.user)
+    blog_history = Post.objects.filter(user = get_anonymous).order_by('-date')
+    date_joined = (request.user.date_joined).strftime('%Y-%m-%d')
+    if request.method == 'POST':
+        get_anonymous.delete()
+        User.objects.get(username = request.user.username).delete()
+        logout_view(request)
+    context = {
+        "blog_history": blog_history,
+        "date_joined": date_joined,
+    }
+    return render(request, 'anonymous/user_settings.html', context)
 def delete_chat(request):
     ajax_response = json.load(request)
     id = ajax_response['id']
