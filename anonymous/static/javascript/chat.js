@@ -1,9 +1,9 @@
 "use strict";
 
-const chnageName = document.querySelectorAll(".fa-pen-to-square");
+const changeChatName = document.querySelectorAll(".fa-pen-to-square");
 const deleteChat = document.querySelectorAll(".fa-trash");
 
-chnageName.forEach((button) => {
+changeChatName.forEach((button) => {
   button.addEventListener("click", function (e) {
     e.preventDefault();
     const clickedValue = e.target.closest(".room-name");
@@ -46,12 +46,14 @@ deleteChat.forEach((chat) => {
     e.preventDefault();
     const roomId = e.target.dataset.id;
     const roomDiv = e.target.closest(".room");
-    console.log(roomDiv);
+
     const modal = document.querySelector(".modal");
-    const yes = document.querySelector(".yes");
-    const numberOfChats = document.querySelector("#numberChats");
     modal.classList.remove("deactive");
     modal.style.opacity = 1;
+
+    const yes = document.querySelector(".yes");
+    const numberOfChats = document.querySelector("#numberChats");
+
     yes.addEventListener("click", function () {
       const token = Cookies.get("csrftoken");
       fetch(`http://127.0.0.1:8000/delete-chat/`, {
@@ -62,7 +64,7 @@ deleteChat.forEach((chat) => {
           "X-CSRFToken": token,
         },
         body: JSON.stringify({ action: "Delete Chat", id: roomId }),
-      }).catch((error) => {
+      }).catch(() => {
         const anonymous = document.querySelector(".container");
         const html = `<ul class="messages">
         <li
@@ -94,7 +96,6 @@ deleteChat.forEach((chat) => {
       fadeOut(modal);
       roomDiv.classList.add("hidden");
       modal.classList.add("hidden");
-      console.log(numberOfChats);
       numberOfChats.innerHTML = new Number(numberOfChats.innerHTML) - 1;
     });
   });

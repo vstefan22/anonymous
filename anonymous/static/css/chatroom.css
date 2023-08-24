@@ -31,13 +31,10 @@ h1 {
   opacity: 0.7;
   padding: 2%;
   color: rgb(255, 0, 0);
-}
-#chat-log {
-  /* display: grid; */
-  /* grid-template-columns: 1, 1fr; */
   height: 50vh;
   overflow-y: scroll;
 }
+
 .message p {
   width: fit-content;
   max-width: 90%;
@@ -49,20 +46,6 @@ h1 {
   background-color: black;
   border-radius: 10px;
   margin: 10px 0 10px 0;
-}
-#warning {
-  text-align: center;
-  background-color: red;
-  color: white;
-  width: 40ch;
-  margin: auto;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  text-transform: uppercase;
-  font-family: monospace;
-  font-size: 16px;
-  font-weight: 200;
-  padding: 10px;
 }
 
 #chat-message-input {
@@ -85,80 +68,18 @@ h1 {
   color: red;
   font-size: 18px;
 }
-nav {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  height: 100%;
-  left: 0;
-  background: #0a2a4d;
-  width: 80px; /* do more research on units */
-  overflow: hidden;
-  transition: width 0.2s linear;
-  color: white;
-  box-shadow: 0 20px 35px black; /* will change it later */
-  z-index: 1;
-}
 
-.logo {
+#warning {
   text-align: center;
-  display: flex;
-  transition: all 0.5s ease;
-  margin: 10px 0 0 1.6em;
-  align-items: center;
-}
-
-.logo span {
-  font-weight: bold;
-  padding-left: 2em;
-  font-size: 18px;
+  background-color: red;
+  color: white;
+  width: 40ch;
+  margin: auto;
+  margin-bottom: 10px;
+  border-radius: 10px;
   text-transform: uppercase;
-}
-nav ul li a {
-  position: relative;
-  color: rgb(85, 83, 83);
-  font-size: 14px;
-  display: table;
-  width: 300px;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 200;
   padding: 10px;
-  color: white;
-}
-
-.fas {
-  position: relative;
-  width: 70px;
-  height: 40px;
-  top: 14px;
-  font-size: 20px;
-  text-align: center;
-  color: white;
-}
-
-.nav-item {
-  position: relative;
-  top: 12px;
-  margin-left: 10px;
-  color: white;
-}
-
-a:hover {
-  background-color: #d0342c;
-}
-nav:hover {
-  width: 280px;
-  transition: all 0.5s ease;
-}
-
-.logout {
-  position: absolute;
-  bottom: 0;
-}
-
-button {
-  background-color: transparent;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
 }

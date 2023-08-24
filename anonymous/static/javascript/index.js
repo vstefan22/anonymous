@@ -15,7 +15,7 @@ const interaction = function (value, interaction, e) {
       "X-CSRFToken": token,
     },
     body: JSON.stringify({ value: value, interaction: interaction, id: id }),
-  }).catch((error) => {
+  }).catch(() => {
     const anonymous = document.querySelector(".anonymous");
     const html = `<ul class="messages">
     <li
@@ -54,14 +54,14 @@ const updateInteraction = function (condition, e) {
 likes.forEach((like) => {
   like.addEventListener("click", function (e) {
     if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "l", e);
+      interaction(-1, "like", e);
       updateInteraction("minus", e);
       e.target.parentNode.lastChild.classList.remove("active");
 
       return;
     }
 
-    interaction(1, "l", e);
+    interaction(1, "like", e);
     updateInteraction("plus", e);
     e.target.parentNode.lastChild.classList.add("active");
   });
@@ -70,12 +70,12 @@ likes.forEach((like) => {
 dislikes.forEach((dislike) => {
   dislike.addEventListener("click", function (e) {
     if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "d", e);
+      interaction(-1, "dislike", e);
       updateInteraction("minus", e);
       e.target.parentNode.lastChild.classList.remove("active");
       return;
     }
-    interaction(1, "d", e);
+    interaction(1, "dislike", e);
     updateInteraction("plus", e);
     e.target.parentNode.lastChild.classList.add("active");
   });

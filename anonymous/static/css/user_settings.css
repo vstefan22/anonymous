@@ -111,7 +111,6 @@ hr {
 }
 .sort-modal select {
   transition: all 0.2s linear;
-
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: black;

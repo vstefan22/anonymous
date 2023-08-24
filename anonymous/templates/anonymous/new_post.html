@@ -5,7 +5,7 @@
 </head>
 <div class="container">
   <h1>Publish Your Post</h1>
-  <form action="" method="post">
+  <form method="post">
     {%csrf_token%} {{form.as_p}}
     <button type="submit" id="submit">Publish</button>
   </form>

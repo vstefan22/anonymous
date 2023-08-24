@@ -1,17 +1,20 @@
 "use strict";
+
 const likes = document.querySelectorAll(".likes");
 const dislikes = document.querySelectorAll(".dislikes");
 const sort = document.querySelector("#sort");
 const select = document.querySelector("#select-option");
-const body = document.body;
 const dateCommentSort = document.querySelectorAll(".comment");
+
+const body = document.body;
+
 const interaction = function (value, interaction, e) {
   e.preventDefault();
   const id = e.srcElement.dataset.id;
   const postId = e.srcElement.dataset.postid;
   const token = Cookies.get("csrftoken");
 
-  fetch(`http://127.0.0.1:8000/comment-like/${id}/${postId}/`, {
+  fetch(`http://127.0.0.1:8000/comment-like/${postId}/`, {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -19,7 +22,7 @@ const interaction = function (value, interaction, e) {
       "X-CSRFToken": token,
     },
     body: JSON.stringify({ value: value, interaction: interaction, id: id }),
-  }).catch((error) => {
+  }).catch(() => {
     const anonymous = document.querySelector(".container");
     const html = `<ul class="messages">
   <li
@@ -57,12 +60,12 @@ const updateInteraction = function (condition, e) {
 likes.forEach((like) => {
   like.addEventListener("click", function (e) {
     if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "l", e);
+      interaction(-1, "like", e);
       updateInteraction("minus", e);
       e.target.parentNode.lastChild.classList.remove("active");
       return;
     }
-    interaction(1, "l", e);
+    interaction(1, "like", e);
     updateInteraction("plus", e);
     e.target.parentNode.lastChild.classList.add("active");
   });
@@ -71,12 +74,12 @@ likes.forEach((like) => {
 dislikes.forEach((dislike) => {
   dislike.addEventListener("click", function (e) {
     if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "d", e);
+      interaction(-1, "dislike", e);
       updateInteraction("minus", e);
       e.target.parentNode.lastChild.classList.remove("active");
       return;
     }
-    interaction(1, "d", e);
+    interaction(1, "dislike", e);
     updateInteraction("plus", e);
     e.target.parentNode.lastChild.classList.add("active");
   });

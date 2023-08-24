@@ -37,11 +37,7 @@
 .likes {
   margin-right: 20px;
 }
-.comment-section {
-  z-index: -1;
-  position: absolute;
-  width: 80%;
-}
+
 textarea {
   border: 1px solid black;
   resize: none;
@@ -54,6 +50,11 @@ textarea {
 .container-one p {
   font-weight: 600;
   letter-spacing: 1px;
+}
+.comment-section {
+  z-index: -1;
+  position: absolute;
+  width: 80%;
 }
 #comment {
   border-radius: 20px;
@@ -71,13 +72,23 @@ textarea {
   box-shadow: 1px 1px 10px black;
 }
 
-form {
-  margin-bottom: 5%;
-}
-
 .interaction-comment {
   margin: 10px 0 0 30px;
   float: left;
+}
+
+.comment-info {
+  float: left;
+  display: flex;
+  align-items: flex-start;
+}
+#comments {
+  margin-top: 25px;
+  margin-right: 50px;
+  font-weight: 600;
+}
+form {
+  margin-bottom: 5%;
 }
 
 #post {
@@ -114,15 +125,8 @@ a:hover {
   opacity: 0;
 }
 
-.comment-info {
-  float: left;
-  display: flex;
-  align-items: flex-start;
-}
-
 .sort-modal select {
   transition: all 0.2s linear;
-
   -webkit-appearance: none;
   -moz-appearance: none;
   background-color: black;
@@ -153,9 +157,4 @@ a:hover {
 }
 #sort i {
   margin-right: 10px;
-}
-#comments {
-  margin-top: 25px;
-  margin-right: 50px;
-  font-weight: 600;
 }

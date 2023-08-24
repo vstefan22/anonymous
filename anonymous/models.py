@@ -17,8 +17,10 @@ class Post(models.Model):
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
+
     def __str__(self):
         return self.title
+
 
 class PostInteraction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -26,9 +28,9 @@ class PostInteraction(models.Model):
     dislikes = models.IntegerField(default=0)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True, related_name = 'interaction')
 
-class Tags(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    tag = models.CharField(max_length=100)
+    def __str__(self):
+        return f'{self.user.username} {self.post.title}'
+
 
 class Comments(models.Model):
     commentator = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -38,17 +40,28 @@ class Comments(models.Model):
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.commentator.username} {self.comment}'
+
+
 class Chat(models.Model):
     room_name = models.CharField(max_length=100)
     room_code = models.TextField()
     date = models.DateTimeField(auto_now_add=True, blank = True, null = True)
     user_sender_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='sender')
     user_receiver_request = models.ForeignKey(Anonymous, on_delete=models.CASCADE, related_name='receiver')
+
+    def __str__(self):
+        return self.room_name
     
+
 class Messages(models.Model):
     room_name = models.CharField(max_length=100, blank=True)
     message = models.TextField()
     date_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.room_name} {self.message}'
 
 
 

@@ -1,158 +1,110 @@
-<!-- chat/templates/chat/room.html -->{%load static%}
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Chat Room</title>
-    <link rel="stylesheet" href="{% static 'css/chatroom.css' %}" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <nav>
-      <ul>
-        <li>
-          <a href="{% url 'index' %}" class="logo"
-            ><i class="fa-solid fa-user-secret fa-2xl"></i><span>Anonymous</span></a
-          >
-        </li>
-        <li>
-          <a href="{% url 'index' %}"
-            ><i class="fas fa-home"></i><span class="nav-item">Home page</span></a
-          >
-        </li>
-        <li>
-          <a href="{%url 'chat' %}"
-            ><i class="fa-solid fa-message fas"></i><span class="nav-item">Chat</span></a
-          >
-        </li>
-        <li>
-          <a href="#"
-            ><i class="fa-solid fa-gear fas"></i><span class="nav-item">User settings</span></a
-          >
-        </li>
-        {%if request.user.is_authenticated%}
-        <li>
-          <a href="{% url 'logout' %}" class="logout"
-            ><i class="fa-solid fa-right-from-bracket fas"></i
-            ><span class="nav-item">Logout</span></a
-          >
-        </li>
-        {%else%}
-        <li>
-          <a href="{% url 'login' %}" class="logout"
-            ><i class="fa-solid fa-right-from-bracket fas"></i
-            ><span class="nav-item">Login</span></a
-          >
-        </li>
-        {%endif%}
-        <li>
-          <a href="{% url 'new_post' %}"
-            ><i class="fa-solid fa-plus fas"></i
-            ><button class="nav-item nav-button">New blog</button></a
-          >
-        </li>
-      </ul>
-    </nav>
-    <h1>You are in the chatroom {{room_name}}</h1>
-    <p id="warning">Warning! When you send message, your username will be shown!</p>
-    <div id="chat-log"></div>
-    <br />
-    <textarea id="chat-message-input" type="text" size="100" placeholder="Type..."></textarea>
-    <input id="chat-message-submit" type="button" value="Send" />
-    {{ room_name|json_script:"room-name" }}
+<!-- chat/templates/chat/room.html -->{%extends 'anonymous/base.html'%} {%load static%}
+<!-- prettier-ignore -->
+{%block content%}
+<head>
+  <meta charset="utf-8" />
+  <title>Chat Room</title>
+  <link rel="stylesheet" href="{% static 'css/chatroom.css' %}" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <h1>You are in the chatroom {{room_name}}</h1>
+  <p id="warning">Warning! When you send message, your username will be shown!</p>
+  <div id="chat-log"></div>
+  <br />
+  <textarea id="chat-message-input" type="text" size="100" placeholder="Type..."></textarea>
+  <input id="chat-message-submit" type="button" value="Send" />
+  {{ room_name|json_script:"room-name" }}
 
-    <!-- JavaScript -->
-    <script>
-      const chatLog = document.querySelector("#chat-log");
-      let html;
-      // Getting backend values
-      const backendValue = "{{messages|escapejs}}";
+  <!-- JavaScript -->
+  <script>
+    const chatLog = document.querySelector("#chat-log");
+    let html;
+    // Getting backend values
+    const backendValue = "{{messages|escapejs}}";
 
-      // Scroll vertically on input
-      document.querySelector("#chat-message-input").addEventListener("input", function () {
-        this.style.height = "0px";
-        this.style.height = this.scrollHeight + "px";
+    // Scroll vertically on input
+    document.querySelector("#chat-message-input").addEventListener("input", function () {
+      this.style.height = "0px";
+      this.style.height = this.scrollHeight + "px";
+    });
+
+    // Convert value to JSON and get Array from the object and put values in the textare
+    function calcHeight(value) {
+      let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+      // min-height + lines x line-height + padding + border
+      let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
+      return newHeight;
+    }
+
+    // Insert previous messages in chat
+    const insertHtml = function (message) {
+      html = `<div class="message"><p>${message}</p></div>`;
+      chatLog.insertAdjacentHTML("beforeend", html);
+    };
+
+    try {
+      const getBackendValue = JSON.parse(backendValue);
+      const [convert] = Object.values(getBackendValue);
+      convert.forEach((message) => {
+        insertHtml(message);
       });
+    } catch {
+      console.error("Error with loading message history");
+    }
 
-      // Convert value to JSON and get Array from the object and put values in the textarea
-      console.log(backendValue);
-      function calcHeight(value) {
-        let numberOfLineBreaks = (value.match(/\n/g) || []).length;
-        // min-height + lines x line-height + padding + border
-        let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
-        return newHeight;
+    // Scroll to bottom of the messages and scroll every time new messages is sent
+    chatLog.scrollTop = chatLog.scrollHeight;
+    function scrollMsg(element) {
+      if (
+        element.scrollHeight > element.clientHeight ||
+        element.scrollWidth > element.clientWidth
+      ) {
+        chatLog.scrollBy(0, element.scrollHeight);
       }
+    }
 
-      // Insert previous messages in chat
-      const insertHtml = function (message) {
-        html = `<div class="message"><p>${message}</p></div>`;
-        chatLog.insertAdjacentHTML("beforeend", html);
-      };
+    // Websocket messaging func
+    const roomName = JSON.parse(document.getElementById("room-name").textContent);
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
 
-      try {
-        const getBackendValue = JSON.parse(backendValue);
-        const [convert] = Object.values(getBackendValue);
-        convert.forEach((message) => {
-          insertHtml(message);
-        });
-      } catch {
-        console.error("Error with loading message history");
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+
+      insertHtml(data.message);
+      scrollMsg(chatLog);
+    };
+
+    chatSocket.onclose = function (e) {
+      console.error("Chat socket closed unexpectedly");
+    };
+
+    document.querySelector("#chat-message-input").focus();
+    console.log("da");
+    document.querySelector("#chat-message-input").onkeyup = function (e) {
+      if (e.keyCode === 13) {
+        // enter, return
+        console.log("da");
+        document.querySelector("#chat-message-submit").click();
       }
+    };
 
-      // Scroll to bottom of the messages and scroll every time new messages is sent
-      chatLog.scrollTop = chatLog.scrollHeight;
-      function scrollMsg(element) {
-        if (
-          element.scrollHeight > element.clientHeight ||
-          element.scrollWidth > element.clientWidth
-        ) {
-          chatLog.scrollBy(0, element.scrollHeight);
-        }
-      }
+    document.querySelector("#chat-message-submit").onclick = function (e) {
+      const messageInputDom = document.querySelector("#chat-message-input");
+      const message = messageInputDom.value;
+      const checkInput = message.replaceAll(/\s/g, "");
+      if (!checkInput) return;
 
-      // Websocket messaging func
-      const roomName = JSON.parse(document.getElementById("room-name").textContent);
-      const chatSocket = new WebSocket(
-        "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+      chatSocket.send(
+        JSON.stringify({
+          message: message,
+        })
       );
-
-      chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-
-        insertHtml(data.message);
-        scrollMsg(chatLog);
-      };
-
-      chatSocket.onclose = function (e) {
-        console.error("Chat socket closed unexpectedly");
-      };
-
-      document.querySelector("#chat-message-input").focus();
-      console.log("da");
-      document.querySelector("#chat-message-input").onkeyup = function (e) {
-        if (e.keyCode === 13) {
-          // enter, return
-          console.log("da");
-          document.querySelector("#chat-message-submit").click();
-        }
-      };
-
-      document.querySelector("#chat-message-submit").onclick = function (e) {
-        const messageInputDom = document.querySelector("#chat-message-input");
-        const message = messageInputDom.value;
-        const checkInput = message.replaceAll(/\s/g, "");
-        if (!checkInput) return;
-
-        chatSocket.send(
-          JSON.stringify({
-            message: message,
-          })
-        );
-        messageInputDom.value = "";
-      };
-    </script>
-  </body>
-</html>
+      messageInputDom.value = "";
+    };
+  </script>
+</body>
+{%endblock%}

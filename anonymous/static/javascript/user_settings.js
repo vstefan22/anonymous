@@ -5,7 +5,7 @@ const buttonClicked = document.querySelector("#delete-account");
 const blogsPosted = document.querySelector(".blogs-posted");
 const sort = document.querySelector("#sort");
 const select = document.querySelector("#select-option");
-const dateCommentSort = document.querySelectorAll(".blog");
+const dateBlogSort = document.querySelectorAll(".blog");
 
 buttonClicked.addEventListener("click", function (e) {
   e.preventDefault();
@@ -17,6 +17,7 @@ buttonClicked.addEventListener("click", function (e) {
         <button id = "cancel">Cancel </button>
       </ul>`;
   accountInfo.insertAdjacentHTML("afterbegin", html);
+
   const yes = document.querySelector("#yes");
   const cancel = document.querySelector("#cancel");
   yes.addEventListener("click", function () {
@@ -30,7 +31,7 @@ buttonClicked.addEventListener("click", function (e) {
       },
     });
     cancel.addEventListener("click", function () {
-      const message = document.querySelector(".messages").classList.add("hidden");
+      document.querySelector(".messages").classList.add("hidden");
     });
   });
 });
@@ -41,13 +42,13 @@ sort.addEventListener("click", function () {
   select.classList.toggle("hidden");
   select.addEventListener("change", function (e) {
     const selectedValue = select.value;
-    console.log(selectedValue);
     const parent = document.querySelector(".blogs-posted");
-    const comment = document.querySelectorAll(".blog");
-    // Remove all comments
-    comment.forEach((div) => div.remove());
+    const blog = document.querySelectorAll(".blog");
+
+    // Remove all blogs
+    blog.forEach((div) => div.remove());
     if (selectedValue === "likes") {
-      const sorted = [...comment].sort((a, b) => {
+      const sorted = [...blog].sort((a, b) => {
         return (
           b.children[1].children[0].children[1].innerHTML -
           a.children[1].children[0].children[1].innerHTML
@@ -55,7 +56,7 @@ sort.addEventListener("click", function () {
       });
       sorted.forEach((div) => parent.append(div));
     } else if (selectedValue === "dislikes") {
-      const sorted = [...comment].sort((a, b) => {
+      const sorted = [...blog].sort((a, b) => {
         return (
           b.children[1].children[1].children[1].innerHTML -
           a.children[1].children[1].children[1].innerHTML
@@ -63,10 +64,10 @@ sort.addEventListener("click", function () {
       });
       sorted.forEach((div) => parent.append(div));
     } else if (selectedValue === "date") {
-      dateCommentSort.forEach((div) => parent.append(div));
+      dateBlogSort.forEach((div) => parent.append(div));
     }
     if (selectedValue === "views") {
-      const sorted = [...comment].sort((a, b) => {
+      const sorted = [...blog].sort((a, b) => {
         console.log();
         return (
           b.children[0].querySelector(".fa-regular").innerHTML -

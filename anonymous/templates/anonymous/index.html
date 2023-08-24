@@ -34,25 +34,24 @@
 
       <div class="data">
         <!-- prettier-ignore -->
-        <span class="date"
-        ><i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span
-      >
+        <span class="date">
+        <i class="fa-solid fa-user modal" style="margin-right: 20px"></i> {{post.date|date:"M d Y"}}</span>
         <span class="views"> <i class="fa-solid fa-eye"></i> {{post.views}}</span>
       </div>
       <p>{{post.description| truncatechars:100}}</p>
     </a>
     <div class="interaction">
-      <!-- prettier-ignore -->
+      <!-- Check if user interacted with the post and if so display proper icon -->
       {%if post.interaction.all%} {% for i in post.interaction.all%} {% if i.user == request.user%}
       {%if i.likes %}
-      <span class="likes"
-        ><i class="fa-solid fa-thumbs-up" data-id="{{post.id}}"></i>
+      <span class="likes">
+        <i class="fa-solid fa-thumbs-up" data-id="{{post.id}}"></i>
 
         <span class="like active">{{post.likes}}</span></span
       >
-      <span class="dislikes"
-        ><i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i
-        ><span class="dislike">{{post.dislikes}}</span></span
+      <span class="dislikes">
+        <i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i>
+        <span class="dislike">{{post.dislikes}}</span></span
       >
       {%endif%} {%if i.dislikes %}
 

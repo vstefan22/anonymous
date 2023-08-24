@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'channels',
     'anonymous',
     'crispy_forms'
-    
-
 ]
 
 MIDDLEWARE = [

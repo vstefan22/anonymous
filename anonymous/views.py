@@ -1,92 +1,67 @@
-from django.contrib.auth import authenticate, logout
-from django.contrib.auth import login as auth_login
-from django.shortcuts import render, redirect
+import json
+
+from django.contrib.auth import authenticate, logout, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction, User
-from .forms import RegisterForm, NewPost
+from django.shortcuts import render, redirect
 from django.db.models import Q
-import shortuuid
-import json
-from datetime import date
 from django.http import HttpResponseRedirect
 
-def generate_code_user(request):
-    id = shortuuid.ShortUUID().random(length=6)
-    try:
-        user_acc = Anonymous.objects.filter(user = request.user)
-    except:
-        user_acc = Anonymous.objects.create(user = request.user, code = id)
-        return user_acc.code
-    if user_acc:
-        if user_acc[0].code:
-            pass
-        else:
-             user_acc = Anonymous.objects.filter(user = request.user).create(code = id)
-    else:
-        user_acc = Anonymous.objects.create(user = request.user, code = id)
-        return user_acc.code
-    return user_acc[0].code
+from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction, User
+from .forms import RegisterForm, NewPost
+from .helper_functions import generate_code_user, get_messages
 
-def get_messages(request, room_name):
-    get_messages = Messages.objects.filter(room_name = room_name).order_by('date_time')
-    pass_json = {'message':[]}
-
-    for message in get_messages:
-        pass_json['message'].append(message.message)
-        
-    messages = json.dumps(pass_json)
-    return messages
 @login_required(login_url="login/")
-
 def index(request):
     if request.method == 'POST':
         user = request.user
+        # Consume ajax request
         ajax_response = json.load(request)
         value = ajax_response['value']
         interaction = ajax_response['interaction']
         post_id = ajax_response['id']
+
+        # Query block
         post = Post.objects.filter(id = post_id)
-        
-        dislikes = post[0].dislikes
-        likes = post[0].likes
-        [print(f.name) for f in Post._meta.get_fields()]
         get_post = Post.objects.get(id = post_id)
-        get_interactions = PostInteraction.objects.filter(post = get_post, user = user)
-        
-        if interaction == 'd':
-            if interaction == 'd' and value < 0:
-                if get_interactions:
+        get_post_interactions = PostInteraction.objects.filter(post = get_post, user = user)
+
+        # Register like or dislike
+        if interaction == 'dislike':
+            dislikes = post[0].dislikes
+            if interaction == 'dislike' and value < 0:
+                if get_post_interactions:
                     post.update(dislikes = dislikes - 1)
-                    get_interactions.delete()
+                    get_post_interactions.delete()
             else:
                 post.update(dislikes = dislikes + 1)
                 PostInteraction.objects.create(post = get_post, user = user, dislikes = 1)
         else:
-            if interaction == 'l' and value < 0:
+            likes = post[0].likes
+            if interaction == 'like' and value < 0:
                 post.update(likes = likes - 1)
-                if get_interactions:
-                    get_interactions.delete()
+                if get_post_interactions:
+                    get_post_interactions.delete()
             else:
                 post.update(likes = likes + 1)
                 PostInteraction.objects.create(post = get_post, user = user, likes = 1)
 
     get_all_posts = Post.objects.all().order_by('-date')
-    for i in get_all_posts:
-        for l in i.interaction.all():
-            print(l.user)
     context = {'get_all_posts':get_all_posts}
 
     return render(request, 'anonymous/index.html', context)
 
+# Chat block
 @login_required(login_url="login/")
 def room(request, room_name):
-    room = Chat.objects.filter(room_name = room_name)
-    if (room[0].user_sender_request == room[0].user_receiver_request):
+    # Get room with user "text publisher functionality"
+    room = Chat.objects.filter(room_name = room_name)[0]
+    if (room.user_sender_request == room.user_receiver_request):
         messages.error(request,"You can't text yourself")
         return redirect("/")
-    chat_messages = get_messages(request, room_name)
+    chat_messages = get_messages(room_name)
     return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages': chat_messages})
+
 
 @login_required(login_url="login/")
 def new_room(request, sender, post_user):
@@ -111,7 +86,7 @@ def new_room(request, sender, post_user):
     
     if check_room:
         room_name = check_room[0].room_name
-        chat_messages = get_messages(request, room_name)
+        chat_messages = get_messages(room_name)
         return render(request, 'anonymous/chatroom.html', {'room_name':room_name, 'messages':chat_messages})
 
     else:
@@ -122,20 +97,23 @@ def new_room(request, sender, post_user):
    
 @login_required(login_url="login/")
 def chat(request):
+    # Display all current chats
     anonymous = Anonymous.objects.get(user = request.user)
     
     if request.method == 'POST':
+        # Consume Ajax request
         ajax_response = json.load(request)
         value = ajax_response['data']
         id = ajax_response['id']
         Chat.objects.filter(id = id).update(room_name = value)
 
     room_list = Chat.objects.filter(Q(user_sender_request = anonymous) | Q(user_receiver_request = anonymous))
-    number_of_rooms = len(room_list)  
+    number_of_rooms = room_list.count()
     context = {'room_list': room_list, 'number_of_rooms':number_of_rooms}
     
     return render(request, 'anonymous/chat.html', context)
 
+# Post block
 @login_required(login_url="login/")
 def new_post(request):
     if request.user.is_authenticated:
@@ -153,20 +131,39 @@ def new_post(request):
     else:
        return render(request, 'anonymous/login.html', context)
 
+
+def post(request, pk):
+    user_code = generate_code_user(request)
+    post = Post.objects.filter(id = pk)
+    post.update(views = post[0].views + 1)
+
+    if request.method == 'POST':
+        commentator = request.user
+        comment = request.POST.get('comment')
+        Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
+        return HttpResponseRedirect(f"/post/{pk}")
+
+    # At the end so newly posted comments are queried also
+    get_comments = Comments.objects.filter(post = post[0]).order_by('-date')
+    number_of_comments = get_comments.count()
+    context = {'post': post[0], 'comments':get_comments, 'user_code': user_code, 'number_of_comments': number_of_comments}
+    return render(request, 'anonymous/post.html', context)
+
+
+# Authentication block
 def login(request):
     if request.method == 'POST':
         username = request.POST["username"]
-        
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             auth_login(request, user)
-            messages.success(request,"You are logged in successfully!")
-            context = {'green':'green'}
+            messages.success(request, "You are logged in successfully!")
 
-            return redirect("/", context)
+            return redirect("/")
         else:
-            messages.error(request,"Incorrect username or password. Please try again.")
+            messages.error(request, "Incorrect username or password. Please try again.")
             return render(request, 'anonymous/login.html')
     return render(request, 'anonymous/login.html')
     
@@ -178,58 +175,18 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            print(request.user.username)
         return redirect("/")
     else:
         form = RegisterForm()
 
     return render(request, "anonymous/register.html", {"form":form})
 
+
 def logout_view(request):
     logout(request)
     return render(request, 'anonymous/logout.html')
-
-def post(request, pk):
-    user_code = generate_code_user(request)
-    post = Post.objects.filter(id = pk)
-    views = post[0].views
-    post.update(views = views + 1)
-    if request.method == 'POST':
-        commentator = request.user
-        comment = request.POST.get('comment')
-        Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
-        return HttpResponseRedirect(f"/post/{pk}")
-
-    get_comments = Comments.objects.filter(post = post[0]).order_by('-date')
-    number_of_comments = Comments.objects.filter(post = post[0]).count()
-    context = {'post': post[0], 'comments':get_comments, 'user_code': user_code, 'number_of_comments': number_of_comments}
-    return render(request, 'anonymous/post.html', context)
-
-
-def comment_like(request, pk, post_id):
-    # from django.utils import simplejson
-    ajax_response = json.load(request)
-    value = ajax_response['value']
-    interaction = ajax_response['interaction']
-    comment_id = ajax_response['id']
-    comment = Comments.objects.filter(id = comment_id)
-    dislikes = comment[0].dislikes
-    likes = comment[0].likes
     
-    if interaction == 'd':
-        if interaction == 'd' and value < 0:
-            comment.update(dislikes = dislikes - 1)
-        else:
-            comment.update(dislikes = dislikes + 1)
-    else:
-        if interaction == 'l' and value < 0:
-            comment.update(likes = likes - 1)
-        else:
-            comment.update(likes = likes + 1)
 
-    
-    return HttpResponseRedirect(f"/post/{post_id}")
-    
 def user_settings(request):
     get_anonymous = Anonymous.objects.get(user = request.user)
     blog_history = Post.objects.filter(user = get_anonymous).order_by('-date')
@@ -238,11 +195,40 @@ def user_settings(request):
         get_anonymous.delete()
         User.objects.get(username = request.user.username).delete()
         logout_view(request)
+
     context = {
         "blog_history": blog_history,
         "date_joined": date_joined,
     }
     return render(request, 'anonymous/user_settings.html', context)
+
+
+# Ajax functions
+def comment_like(request, post_id):
+    # Consume Ajax request
+    ajax_response = json.load(request)
+    value = ajax_response['value']
+    interaction = ajax_response['interaction']
+    comment_id = ajax_response['id']
+
+    liked_comment = Comments.objects.filter(id = comment_id)
+    
+    if interaction == 'dislike':
+        dislikes = liked_comment[0].dislikes
+        if interaction == 'dislike' and value < 0:
+            liked_comment.update(dislikes = dislikes - 1)
+        else:
+            liked_comment.update(dislikes = dislikes + 1)
+    else:
+        likes = liked_comment[0].likes
+        if interaction == 'like' and value < 0:
+            liked_comment.update(likes = likes - 1)
+        else:
+            liked_comment.update(likes = likes + 1)
+
+    return HttpResponseRedirect(f"/post/{post_id}")
+
+
 def delete_chat(request):
     ajax_response = json.load(request)
     id = ajax_response['id']

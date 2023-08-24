@@ -41,7 +41,6 @@ p textarea {
   font-weight: bold;
   border: 2px solid white;
   border-image-slice: 1;
-  /* border-width: 5px; */
   color: white;
   letter-spacing: 3px;
   background: linear-gradient(to left, #a07edc, #800252);
