@@ -7,7 +7,7 @@ const interaction = function (value, interaction, e) {
   e.preventDefault();
   const id = e.srcElement.dataset.id;
   const token = Cookies.get("csrftoken");
-  fetch(`https://social-media-anonymous-1c24ef513f9b.herokuapp.com//`, {
+  fetch(`https://social-media-anonymous-1c24ef513f9b.herokuapp.com/`, {
     method: "POST",
     credentials: "same-origin",
     headers: {
