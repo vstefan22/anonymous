@@ -1,2 +1,2 @@
 web: gunicorn core.wsgi --log-file -
-worker: daphne -b 0.0.0.0 -p $PORT core.asgi:application
+daphne -b 0.0.0.0 -p 8001 core.asgi:application
