@@ -14,7 +14,7 @@ const interaction = function (value, interaction, e) {
   const postId = e.srcElement.dataset.postid;
   const token = Cookies.get("csrftoken");
 
-  fetch(`http://127.0.0.1:8000/comment-like/${postId}/`, {
+  fetch(`https://social-media-anonymous-1c24ef513f9b.herokuapp.com//comment-like/${postId}/`, {
     method: "POST",
     credentials: "same-origin",
     headers: {
