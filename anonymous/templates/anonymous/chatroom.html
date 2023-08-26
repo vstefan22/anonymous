@@ -53,7 +53,7 @@
         insertHtml(message);
       });
     } catch {
-      console.error("Error with loading message history! No message history found!");
+      console.error("Error with loading message history");
     }
 
     // Scroll to bottom of the messages and scroll every time new messages is sent
@@ -69,8 +69,9 @@
 
     // Websocket messaging func
     const roomName = JSON.parse(document.getElementById("room-name").textContent);
-    console.log("wss://" + window.location.host + "/ws/chat/" + roomName + "/");
-    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+    const chatSocket = new WebSocket(
+      "wss://" + window.location.host + "/ws/chat/" + roomName + "/"
+    );
 
     chatSocket.onmessage = function (e) {
       const data = JSON.parse(e.data);
@@ -98,12 +99,13 @@
       const message = messageInputDom.value;
       const checkInput = message.replaceAll(/\s/g, "");
       if (!checkInput) return;
-
-      chatSocket.send(
-        JSON.stringify({
-          message: message,
-        })
-      );
+      chatSocket.onopen = () => {
+        chatSocket.send(
+          JSON.stringify({
+            message: message,
+          })
+        );
+      };
       messageInputDom.value = "";
     };
   </script>
