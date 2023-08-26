@@ -69,6 +69,7 @@
 
     // Websocket messaging func
     const roomName = JSON.parse(document.getElementById("room-name").textContent);
+    console.log("wss://" + window.location.host + "/ws/chat/" + roomName + "/");
     const chatSocket = new WebSocket(
       "wss://" + window.location.host + "/ws/chat/" + roomName + "/"
     );
