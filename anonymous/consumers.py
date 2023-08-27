@@ -6,7 +6,6 @@ from .models import Messages
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
-        print('test')
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = "chat_%s" % self.room_name  
         
@@ -18,19 +17,14 @@ class ChatConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         print('test1')
-        # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
 
     # Receive message from WebSocket
     def receive(self, text_data):
-        print('test2')
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-    
-        # If message is empty don't send it
-        if not message: return
 
         # Sender
         username = self.scope["user"].username
@@ -39,7 +33,6 @@ class ChatConsumer(WebsocketConsumer):
         # Save message in database
         Messages.objects.create(room_name = self.room_name, message = finalMessage)
         
-        # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {"type": "chat_message", "message": finalMessage}
         )
@@ -49,6 +42,5 @@ class ChatConsumer(WebsocketConsumer):
         print('test3')
         message = event["message"]
         username = self.scope["user"].username
-        # Send message to WebSocket
         self.send(text_data=json.dumps({'message': message,
         "username": username}))
