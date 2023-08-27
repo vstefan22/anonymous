@@ -22,7 +22,7 @@ buttonClicked.addEventListener("click", function (e) {
   const cancel = document.querySelector("#cancel");
   yes.addEventListener("click", function () {
     const token = Cookies.get("csrftoken");
-    fetch(`https://social-media-anonymous-1c24ef513f9b.herokuapp.com/user-settings/`, {
+    fetch(`/user-settings/`, {
       method: "POST",
       credentials: "same-origin",
       headers: {

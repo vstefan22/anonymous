@@ -23,8 +23,8 @@ changeChatName.forEach((button) => {
         e.preventDefault();
         const value = inputField.value;
         const token = Cookies.get("csrftoken");
-        const baseLocation = window.location.host;
-        fetch(`${baseLocation}/chat/`, {
+
+        fetch(`/chat/`, {
           method: "POST",
           credentials: "same-origin",
           headers: {
@@ -57,7 +57,7 @@ deleteChat.forEach((chat) => {
 
     yes.addEventListener("click", function () {
       const token = Cookies.get("csrftoken");
-      fetch(`http://127.0.0.1:8000/delete-chat/`, {
+      fetch(`/delete-chat/`, {
         method: "POST",
         credentials: "same-origin",
         headers: {

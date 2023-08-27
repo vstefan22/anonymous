@@ -235,7 +235,7 @@ def delete_chat(request):
     if (ajax_response['action'] == 'Delete Chat'):
         del_chat = Chat.objects.filter(id = id)
         del_messages = Messages.objects.filter(room_name = del_chat[0].room_name)
-        del_chat.delete()
-        del_messages.delete()
+        # del_chat.delete()
+        # del_messages.delete()
         
     return HttpResponseRedirect("/chat/")
