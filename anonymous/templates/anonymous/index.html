@@ -44,34 +44,34 @@
       <!-- Check if user interacted with the post and if so display proper icon -->
       {%if post.interaction.all%} {% for i in post.interaction.all%} {% if i.user == request.user%}
       {%if i.likes %}
-      <span class="likes">
-        <i class="fa-solid fa-thumbs-up" data-id="{{post.id}}"></i>
+      <span class="likes" data-id="{{post.id}}">
+        <i class="fa-solid fa-thumbs-up"></i>
 
         <span class="like active">{{post.likes}}</span></span
       >
-      <span class="dislikes">
-        <i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i>
+      <span class="dislikes" data-id="{{post.id}}">
+        <i class="fa-regular fa-thumbs-down"></i>
         <span class="dislike">{{post.dislikes}}</span></span
       >
       {%endif%} {%if i.dislikes %}
 
-      <span class="likes"
-        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i>
+      <span class="likes" data-id="{{post.id}}"
+        ><i class="fa-regular fa-thumbs-up"></i>
 
         <span class="like">{{post.likes}}</span></span
       >
-      <span class="dislikes"
-        ><i class="fa-solid fa-thumbs-down" data-id="{{post.id}}"></i
+      <span class="dislikes" data-id="{{post.id}}"
+        ><i class="fa-solid fa-thumbs-down"></i
         ><span class="dislike active">{{post.dislikes}}</span></span
       >
       {%endif%} {%endif%}{%endfor%} {%else%}
-      <span class="likes"
-        ><i class="fa-regular fa-thumbs-up" data-id="{{post.id}}"></i>
+      <span class="likes" data-id="{{post.id}}"
+        ><i class="fa-regular fa-thumbs-up"></i>
 
         <span class="like">{{post.likes}}</span></span
       >
-      <span class="dislikes"
-        ><i class="fa-regular fa-thumbs-down" data-id="{{post.id}}"></i
+      <span class="dislikes" data-id="{{post.id}}"
+        ><i class="fa-regular fa-thumbs-down"></i
         ><span class="dislike">{{post.dislikes}}</span></span
       >{%endif%}
     </div>
