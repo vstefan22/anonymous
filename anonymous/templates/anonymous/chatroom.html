@@ -101,13 +101,13 @@
       const message = messageInputDom.value;
       const checkInput = message.replaceAll(/\s/g, "");
       if (!checkInput) return;
-      chatSocket.onopen = () => {
-        chatSocket.send(
-          JSON.stringify({
-            message: message,
-          })
-        );
-      };
+
+      chatSocket.send(
+        JSON.stringify({
+          message: message,
+        })
+      );
+
       messageInputDom.value = "";
     };
   </script>
