@@ -28,6 +28,9 @@ MESSAGE_TAGS = {
  }
 
 # Application definition
+CSRF_TRUSTED_ORIGINS = [
+    'https://social-media-anonymous-1c24ef513f9b.herokuapp.com/'
+]
 
 INSTALLED_APPS = [
     'daphne',
