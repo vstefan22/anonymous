@@ -8,13 +8,10 @@ const dateCommentSort = document.querySelectorAll(".comment");
 
 const body = document.body;
 
-const interaction = function (value, interaction, e) {
-  e.preventDefault();
-  const id = e.srcElement.dataset.id;
-  const postId = e.srcElement.dataset.postid;
+const interaction = async function (value, interaction, id, postId) {
   const token = Cookies.get("csrftoken");
 
-  fetch(`/comment-like/${postId}/`, {
+  await fetch(`/post/${postId}/`, {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -43,45 +40,74 @@ const interaction = function (value, interaction, e) {
   });
 };
 
-const updateInteraction = function (condition, e) {
-  let interactionNumber;
-  if (condition === "minus") {
-    interactionNumber = new Number(e.target.parentNode.lastChild.innerHTML) - 1;
-    e.target.classList.add("fa-regular");
-    e.target.classList.remove("fa-solid");
-  } else {
-    interactionNumber = new Number(e.target.parentNode.lastChild.innerHTML) + 1;
-    e.target.classList.remove("fa-regular");
-    e.target.classList.add("fa-solid");
-  }
-  e.target.parentNode.lastChild.innerHTML = interactionNumber;
-};
-
 likes.forEach((like) => {
   like.addEventListener("click", function (e) {
-    if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "like", e);
-      updateInteraction("minus", e);
-      e.target.parentNode.lastChild.classList.remove("active");
+    const clickedLike = like.querySelector(".fa-thumbs-up");
+    const numberOfLikes = like.querySelector(".like");
+    if (
+      like.nextElementSibling.querySelector(".dislike").classList.contains("active") ||
+      like.nextElementSibling.querySelector(".fa-thumbs-down").classList.contains("fa-solid")
+    )
       return;
+    // Change from solid to regular
+    clickedLike.classList.toggle("fa-regular");
+    clickedLike.classList.toggle("fa-solid");
+    const id = like.dataset.id;
+    console.log(id);
+
+    const postId = like.dataset.postid;
+
+    if (clickedLike.classList.contains("fa-solid")) {
+      // 1) Add number of likes and display value in DOM
+      const updateNumberOfLikes = 1 + +numberOfLikes.innerHTML;
+      numberOfLikes.innerHTML = updateNumberOfLikes;
+
+      // 2) Send data to backend using AJAX
+      interaction(1, "like", id, postId);
     }
-    interaction(1, "like", e);
-    updateInteraction("plus", e);
-    e.target.parentNode.lastChild.classList.add("active");
+    if (clickedLike.classList.contains("fa-regular")) {
+      // 1) Subtract number of likes and display value in DOM
+      const updateNumberOfLikes = 1 - +numberOfLikes.innerHTML;
+      numberOfLikes.innerHTML = updateNumberOfLikes;
+
+      // 2) Send data to backend using AJAX
+      interaction(-1, "like", id, postId);
+    }
   });
 });
 
 dislikes.forEach((dislike) => {
   dislike.addEventListener("click", function (e) {
-    if (e.target.parentNode.lastChild.classList.contains("active")) {
-      interaction(-1, "dislike", e);
-      updateInteraction("minus", e);
-      e.target.parentNode.lastChild.classList.remove("active");
+    const clickedDislike = dislike.querySelector(".fa-thumbs-down");
+    const numberOfDislikes = dislike.querySelector(".dislike");
+    console.log(dislike.previousElementSibling.querySelector(".like"));
+    if (
+      dislike.previousElementSibling.querySelector(".like").classList.contains("active") ||
+      dislike.previousElementSibling.querySelector(".fa-thumbs-up").classList.contains("fa-solid")
+    )
       return;
+    // Change from solid to regular
+    clickedDislike.classList.toggle("fa-regular");
+    clickedDislike.classList.toggle("fa-solid");
+    const id = dislike.dataset.id;
+    const postId = dislike.dataset.postid;
+
+    if (clickedDislike.classList.contains("fa-solid")) {
+      // 1) Add number of likes and display value in DOM
+      const updateNumberOfDislikes = 1 + +numberOfDislikes.innerHTML;
+      numberOfDislikes.innerHTML = updateNumberOfDislikes;
+
+      // 2) Send data to backend using AJAX
+      interaction(1, "dislike", id, postId);
     }
-    interaction(1, "dislike", e);
-    updateInteraction("plus", e);
-    e.target.parentNode.lastChild.classList.add("active");
+    if (clickedDislike.classList.contains("fa-regular")) {
+      // 1) Subtract number of likes and display value in DOM
+      const updatenumberOfDislikes = 1 - +numberOfDislikes.innerHTML;
+      numberOfDislikes.innerHTML = updatenumberOfDislikes;
+
+      // 2) Send data to backend using AJAX
+      interaction(-1, "dislike", id, postId);
+    }
   });
 });
 

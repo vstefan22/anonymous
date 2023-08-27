@@ -32,6 +32,7 @@ class PostInteraction(models.Model):
         return f'{self.user.username} {self.post.title}'
 
 
+
 class Comments(models.Model):
     commentator = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -43,6 +44,15 @@ class Comments(models.Model):
     def __str__(self):
         return f'{self.commentator.username} {self.comment}'
 
+class CommentInteraction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    comment = models.ForeignKey(Comments, on_delete = models.CASCADE, null = True, blank = True, related_name = 'interaction')
+
+    def __str__(self):
+        return f'{self.user.username} {self.comment.post}'
+    
 
 class Chat(models.Model):
     room_name = models.CharField(max_length=100)

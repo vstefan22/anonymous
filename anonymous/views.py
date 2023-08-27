@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 
-from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction, User
+from .models import Anonymous, Post, Chat, Messages, Comments, PostInteraction, User, CommentInteraction
 from .forms import RegisterForm, NewPost
 from .helper_functions import generate_code_user, get_messages
 
@@ -131,6 +131,42 @@ def new_post(request):
     else:
        return render(request, 'anonymous/login.html', context)
 
+def comment_like(request):
+    # Consume Ajax request
+    if is_ajax(request=request):
+        print('da')
+    ajax_response = json.load(request)
+    value = ajax_response['value']
+    interaction = ajax_response['interaction']
+    
+    comment_id = ajax_response['id']
+
+    user = request.user 
+    comment = Comments.objects.filter(id = comment_id)
+    get_comment = Comments.objects.get(id = comment_id)
+    get_comment_interactions = CommentInteraction.objects.filter(comment = get_comment, user = user)
+
+    # Register like or dislike
+    if interaction == 'dislike':
+        dislikes = comment[0].dislikes
+        if interaction == 'dislike' and value < 0:
+            if get_comment_interactions:
+                comment.update(dislikes = dislikes - 1)
+                get_comment_interactions.delete()
+        else:
+            comment.update(dislikes = dislikes + 1)
+            CommentInteraction.objects.create(comment = get_comment, user = user, dislikes = 1)
+    else:
+        likes = comment[0].likes
+        if interaction == 'like' and value < 0:
+            comment.update(likes = likes - 1)
+            if get_comment_interactions:
+                get_comment_interactions.delete()
+        else:
+            print('taj')
+            comment.update(likes = likes + 1)
+            CommentInteraction.objects.create(comment = get_comment, user = user, likes = 1)
+
 
 def post(request, pk):
     user_code = generate_code_user(request)
@@ -138,15 +174,25 @@ def post(request, pk):
     post.update(views = post[0].views + 1)
 
     if request.method == 'POST':
-        commentator = request.user
-        comment = request.POST.get('comment')
-        Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
-        return HttpResponseRedirect(f"/post/{pk}")
+        print(request)
+        try:
+            
+            get_all_comments = comment_like(request)
+            
+        except:
+            print('da')
+            commentator = request.user
+            comment = request.POST.get('comment')
+            Comments.objects.create(commentator = commentator, comment = comment, post = post[0])
+            return HttpResponseRedirect(f"/post/{pk}")
 
     # At the end so newly posted comments are queried also
-    get_comments = Comments.objects.filter(post = post[0]).order_by('-date')
-    number_of_comments = get_comments.count()
-    context = {'post': post[0], 'comments':get_comments, 'user_code': user_code, 'number_of_comments': number_of_comments}
+    get_all_comments = Comments.objects.filter(post = post[0]).order_by('-date')
+    for i in get_all_comments:
+        for l in i.interaction.all():
+            print(l.user == request.user)
+    number_of_comments = get_all_comments.count()
+    context = {'post': post[0], 'user_code': user_code, 'number_of_comments': number_of_comments, 'get_all_comments': get_all_comments}
     return render(request, 'anonymous/post.html', context)
 
 
@@ -207,31 +253,14 @@ def user_settings(request):
     }
     return render(request, 'anonymous/user_settings.html', context)
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 # Ajax functions
-def comment_like(request, post_id):
-    # Consume Ajax request
-    ajax_response = json.load(request)
-    value = ajax_response['value']
-    interaction = ajax_response['interaction']
-    comment_id = ajax_response['id']
 
-    liked_comment = Comments.objects.filter(id = comment_id)
     
-    if interaction == 'dislike':
-        dislikes = liked_comment[0].dislikes
-        if interaction == 'dislike' and value < 0:
-            liked_comment.update(dislikes = dislikes - 1)
-        else:
-            liked_comment.update(dislikes = dislikes + 1)
-    else:
-        likes = liked_comment[0].likes
-        if interaction == 'like' and value < 0:
-            liked_comment.update(likes = likes - 1)
-        else:
-            liked_comment.update(likes = likes + 1)
 
-    return HttpResponseRedirect(f"/post/{post_id}")
+
 
 
 def delete_chat(request):
