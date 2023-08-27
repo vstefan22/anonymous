@@ -23,7 +23,8 @@ changeChatName.forEach((button) => {
         e.preventDefault();
         const value = inputField.value;
         const token = Cookies.get("csrftoken");
-        fetch(`http://127.0.0.1:8000/chat/`, {
+        const baseLocation = window.location.host;
+        fetch(`${baseLocation}/chat/`, {
           method: "POST",
           credentials: "same-origin",
           headers: {
