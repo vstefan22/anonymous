@@ -1,2 +1,1 @@
-web: gunicorn core.wsgi --log-file -
-daphne -b 0.0.0.0 -p 443 core.asgi:application
+web: daphne core.asgi:application --port $PORT --bind 0.0.0.0 -v2
