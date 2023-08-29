@@ -74,7 +74,7 @@
         ><i class="fa-regular fa-thumbs-down"></i
         ><span class="dislike">{{post.dislikes}}</span></span
       >
-      {%endif%}{%endfor%} {%endif%} {%if post.interaction.all == None%}
+      {%endif%}{%endfor%} {%else%}
       <span class="likes" data-id="{{post.id}}"
         ><i class="fa-regular fa-thumbs-up"></i>
 
