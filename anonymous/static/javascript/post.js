@@ -53,7 +53,6 @@ likes.forEach((like) => {
     clickedLike.classList.toggle("fa-regular");
     clickedLike.classList.toggle("fa-solid");
     const id = like.dataset.id;
-    console.log(id);
 
     const postId = like.dataset.postid;
 
@@ -80,7 +79,6 @@ dislikes.forEach((dislike) => {
   dislike.addEventListener("click", function (e) {
     const clickedDislike = dislike.querySelector(".fa-thumbs-down");
     const numberOfDislikes = dislike.querySelector(".dislike");
-    console.log(dislike.previousElementSibling.querySelector(".like"));
     if (
       dislike.previousElementSibling.querySelector(".like").classList.contains("active") ||
       dislike.previousElementSibling.querySelector(".fa-thumbs-up").classList.contains("fa-solid")
